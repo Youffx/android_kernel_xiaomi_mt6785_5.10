@@ -1346,6 +1346,19 @@ config TOUCHSCREEN_ZINITIX
 	  To compile this driver as a module, choose M here: the
 	  module will be called zinitix.
 
+source "drivers/input/touchscreen/ft3418_i2c/Kconfig"
+
+source "drivers/input/touchscreen/xiaomi/Kconfig"
+
+source "drivers/input/touchscreen/goodix_gtx8/Kconfig"
+
+config TOUCHSCREEN_COMMON
+	bool "Common touchscreen interface to interact with userspace"
+	depends on I2C
+	default n
+	help
+	  Say Y here if you want to control touchpanel features via /sys/touchpanel.
+
 config TOUCHSCREEN_MTK_TOUCH
        string "Touch IC name for Mediatek package"
        help

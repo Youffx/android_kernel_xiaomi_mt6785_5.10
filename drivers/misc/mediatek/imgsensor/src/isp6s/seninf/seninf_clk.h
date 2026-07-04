@@ -133,7 +133,7 @@ struct SENINF_CLK_CTRL {
 	char *pctrl;
 };
 
-static struct SENINF_CLK_CTRL gseninf_mclk_name[SENINF_CLK_IDX_MAX_NUM] = {
+static __maybe_unused struct SENINF_CLK_CTRL gseninf_mclk_name[SENINF_CLK_IDX_MAX_NUM] = {
 #ifndef SENINF_USE_RPM
 	{"SCP_SYS_MDP"},
 	{"SCP_SYS_CAM"},
@@ -158,7 +158,7 @@ static struct SENINF_CLK_CTRL gseninf_mclk_name[SENINF_CLK_IDX_MAX_NUM] = {
 	{"TOP_UNIVPLL_D6_D8"},  /*  52*/
 };
 
-static enum SENINF_CLK_MCLK_FREQ
+static __maybe_unused enum SENINF_CLK_MCLK_FREQ
 gseninf_clk_freq[SENINF_CLK_IDX_FREQ_IDX_NUM] = {
 	SENINF_CLK_MCLK_FREQ_6MHZ,
 	SENINF_CLK_MCLK_FREQ_12MHZ,

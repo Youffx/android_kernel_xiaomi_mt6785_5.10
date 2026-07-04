@@ -1825,6 +1825,17 @@ config COMMON_CLK_MTK_FREQ_HOPPING
 	  say Y or M here.
 	  If unsure, say N.
 
+config COMMON_CLK_MT6785
+	bool "Clock driver for Mediatek MT6785"
+	depends on COMMON_CLK
+	select COMMON_CLK_MEDIATEK
+	default n
+	help
+	  This driver supports Mediatek MT6785 clocks.
+	  Use the config to support CCF on MT6785,
+	  instead of old clkmgr architecture.
+	  MT6785 default will use CCF.
+
 config COMMON_CLK_MTK_FREQ_HOPPING_DEBUG
 	bool "Mediatek Frequency Hopping debug fs"
 	default y

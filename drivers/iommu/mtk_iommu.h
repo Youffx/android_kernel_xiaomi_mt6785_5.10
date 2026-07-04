@@ -45,6 +45,7 @@ enum mtk_iommu_plat {
 	M4U_MT2701,
 	M4U_MT2712,
 	M4U_MT6779,
+	M4U_MT6785,
 	M4U_MT6789,
 	M4U_MT6833,
 	M4U_MT6853,
@@ -212,16 +213,16 @@ uint64_t mtee_iova_to_phys(unsigned long iova, u32 tab_id, u32 *sr_info,
 
 #else
 
-int dev_is_normal_region(struct device *dev)
+static inline int dev_is_normal_region(struct device *dev)
 {
 	return 0;
 }
 
-void mtk_iommu_dbg_hang_detect(enum mtk_iommu_type type, int id)
+static inline void mtk_iommu_dbg_hang_detect(enum mtk_iommu_type type, int id)
 {
 }
 
-uint64_t mtee_iova_to_phys(unsigned long iova, u32 tab_id, u32 *sr_info,
+static inline uint64_t mtee_iova_to_phys(unsigned long iova, u32 tab_id, u32 *sr_info,
 			u64 *pa, u32 *type, u32 *lvl)
 {
 	return 0;

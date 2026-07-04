@@ -26,12 +26,6 @@ struct mtk_rpmsg_rproc_subdev {
 
 #define to_mtk_subdev(d) container_of(d, struct mtk_rpmsg_rproc_subdev, subdev)
 
-struct mtk_rpmsg_channel_info {
-	struct rpmsg_channel_info info;
-	bool registered;
-	struct list_head list;
-};
-
 /**
  * struct rpmsg_ns_msg - dynamic name service announcement message
  * @name: name of remote service that is published
@@ -46,16 +40,6 @@ struct rpmsg_ns_msg {
 	char name[RPMSG_NAME_SIZE];
 	u32 addr;
 } __packed;
-
-struct mtk_rpmsg_device {
-	struct rpmsg_device rpdev;
-	struct mtk_rpmsg_rproc_subdev *mtk_subdev;
-};
-
-struct mtk_rpmsg_endpoint {
-	struct rpmsg_endpoint ept;
-	struct mtk_rpmsg_rproc_subdev *mtk_subdev;
-};
 
 #define to_mtk_rpmsg_device(r) container_of(r, struct mtk_rpmsg_device, rpdev)
 #define to_mtk_rpmsg_endpoint(r) container_of(r, struct mtk_rpmsg_endpoint, ept)
@@ -247,7 +231,7 @@ static void mtk_register_device_work_function(struct work_struct *register_work)
 	mutex_unlock(&subdev->channels_lock);
 }
 
-static int mtk_rpmsg_create_device(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
+static int mtk_rpmsg_create_channel_device(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
 				   char *name, u32 addr)
 {
 	struct mtk_rpmsg_channel_info *info;
@@ -297,7 +281,7 @@ static int mtk_rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
 
 	dev_info(dev, "creating channel %s addr 0x%x\n", msg->name, msg->addr);
 
-	ret = mtk_rpmsg_create_device(mtk_subdev, msg->name, msg->addr);
+	ret = mtk_rpmsg_create_channel_device(mtk_subdev, msg->name, msg->addr);
 	if (ret) {
 		dev_err(dev, "create rpmsg device failed\n");
 		return ret;

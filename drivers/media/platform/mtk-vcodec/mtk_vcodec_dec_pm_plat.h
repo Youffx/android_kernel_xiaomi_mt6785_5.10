@@ -9,8 +9,12 @@
 
 #include "mtk_vcodec_drv.h"
 
+#ifndef DEC_DVFS
 #define DEC_DVFS	1
+#endif
+#ifndef DEC_EMI_BW
 #define DEC_EMI_BW	1
+#endif
 
 void mtk_prepare_vdec_dvfs(struct mtk_vcodec_dev *dev);
 void mtk_unprepare_vdec_dvfs(struct mtk_vcodec_dev *dev);

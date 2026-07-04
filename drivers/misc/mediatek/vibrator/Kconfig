@@ -1,0 +1,5 @@
+config MTK_VIBRATOR
+	bool "MediaTek Vibrator driver"
+	help
+	  MediaTek vibrator driver support.
+	  Say Y if you have vibrator on your device.

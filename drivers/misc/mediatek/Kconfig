@@ -160,7 +160,11 @@ source "drivers/misc/mediatek/usb_meta/Kconfig"
 source "drivers/misc/mediatek/usb20/Kconfig"
 source "drivers/misc/mediatek/irtx/Kconfig"
 source "drivers/misc/mediatek/pwm/Kconfig"
+source "drivers/misc/mediatek/vibrator/Kconfig"
+source "drivers/misc/mediatek/leds/Kconfig"
+source "drivers/misc/mediatek/accdet/Kconfig"
 source "drivers/misc/mediatek/sensor/Kconfig"
+source "drivers/misc/mediatek/sensors-1.0/Kconfig"
 source "drivers/misc/mediatek/gate_ic/Kconfig"
 endmenu # Other Peripheral
 
@@ -195,6 +199,8 @@ config EXT_MODULES
 	  The value must be kernel module repo list, such as
 	  "vendor/mediatek/kernel_modules/connectivity/common vendor/mediatek/kernel_modules/connectivity/gps"
 endmenu # Config
+
+source "drivers/misc/mediatek/thermal/Kconfig"
 
 menu "Misc configs"
 config FPGA_EARLY_PORTING

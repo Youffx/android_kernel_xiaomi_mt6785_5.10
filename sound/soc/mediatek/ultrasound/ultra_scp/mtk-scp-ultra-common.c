@@ -30,14 +30,14 @@ int ultra_set_dsp_afe(struct mtk_base_afe *afe)
 	return 0;
 }
 EXPORT_SYMBOL_GPL(ultra_set_dsp_afe);
-struct mtk_base_afe *get_afe_base(void)
+__weak struct mtk_base_afe *get_afe_base(void)
 {
 	if (!local_scp_ultra_afe)
 		pr_err("%s(), local_scp_ultra_afe is NULL", __func__);
 
 	return local_scp_ultra_afe;
 }
-void set_ipi_recv_private(void *priv)
+__weak void set_ipi_recv_private(void *priv)
 {
 	pr_debug("%s\n", __func__);
 

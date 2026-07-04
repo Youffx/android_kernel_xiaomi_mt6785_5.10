@@ -112,7 +112,7 @@ struct unwind_info_rms {
 #if IS_ENABLED(CONFIG_MTK_HANG_DETECT)
 void monitor_hang_regist_ldt(void (*fn)(void));
 #else
-void monitor_hang_regist_ldt(void (*fn)(void))
+static inline void monitor_hang_regist_ldt(void (*fn)(void))
 {
 }
 #endif

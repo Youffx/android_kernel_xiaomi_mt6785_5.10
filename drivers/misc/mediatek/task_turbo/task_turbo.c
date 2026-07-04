@@ -596,7 +596,7 @@ static void set_load_weight(struct task_struct *p, bool update_load)
 	}
 }
 
-int idle_cpu(int cpu)
+__weak int idle_cpu(int cpu)
 {
 	struct rq *rq = cpu_rq(cpu);
 

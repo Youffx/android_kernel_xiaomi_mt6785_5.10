@@ -2734,6 +2734,7 @@ static int mtk_aal_sof_irq_trigger(void *data)
 		disp_aal_wait_sof_irq();
 		atomic_set(&g_aal_sof_irq_available, 0);
 	}
+	return 0;
 }
 
 static irqreturn_t mtk_disp_aal_irq_handler(int irq, void *dev_id)

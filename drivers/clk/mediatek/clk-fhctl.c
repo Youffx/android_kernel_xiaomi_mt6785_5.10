@@ -93,7 +93,7 @@ static struct pll_dts *parse_dt(struct platform_device *pdev)
 
 	size = sizeof(*array)*num_pll;
 	array = kzalloc(size, GFP_KERNEL);
-	FHDBG("array<%lx>, num_pll<%d>, comp<%s>, sizeof(*array)=%d, size<%d>\n",
+	FHDBG("array<%lx>, num_pll<%d>, comp<%s>, sizeof(*array)=%zu, size<%d>\n",
 			(unsigned long)array, num_pll,
 			match->compatible, sizeof(*array), size);
 	for_each_child_of_node(root, map) {

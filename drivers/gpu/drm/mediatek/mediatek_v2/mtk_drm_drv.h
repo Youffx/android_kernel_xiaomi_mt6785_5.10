@@ -181,6 +181,9 @@ struct mtk_drm_private {
 	wait_queue_head_t signal_mml_job_done_wq;
 
 	unsigned int seg_id;
+
+	struct drm_fb_helper fb_helper;
+	struct drm_gem_object *fbdev_bo;
 };
 
 struct mtk_drm_property {

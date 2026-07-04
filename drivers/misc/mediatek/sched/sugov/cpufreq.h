@@ -55,7 +55,6 @@ struct sugov_policy {
 	bool			need_freq_update;
 };
 
-#if IS_ENABLED(CONFIG_MTK_OPP_CAP_INFO)
 int init_opp_cap_info(struct proc_dir_entry *dir);
 void clear_opp_cap_info(void);
 #if IS_ENABLED(CONFIG_NONLINEAR_FREQ_CTL)
@@ -64,7 +63,6 @@ void mtk_arch_set_freq_scale(void *data, const struct cpumask *cpus,
 
 extern int set_sched_capacity_margin_dvfs(unsigned int capacity_margin);
 extern unsigned int get_sched_capacity_margin_dvfs(void);
-#endif
 #endif
 
 extern unsigned long pd_get_opp_capacity(int cpu, int opp);

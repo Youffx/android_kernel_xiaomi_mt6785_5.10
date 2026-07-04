@@ -527,7 +527,7 @@ static void mtk_charger_start_timer(struct mtk_charger *info)
 	info->endtime = end_time;
 	ktime = ktime_set(info->endtime.tv_sec, info->endtime.tv_nsec);
 
-	chr_err("%s: alarm timer start:%d, %ld %ld\n", __func__, ret,
+	chr_err("%s: alarm timer start:%d, %lld %ld\n", __func__, ret,
 		info->endtime.tv_sec, info->endtime.tv_nsec);
 	alarm_start(&info->charger_timer, ktime);
 }

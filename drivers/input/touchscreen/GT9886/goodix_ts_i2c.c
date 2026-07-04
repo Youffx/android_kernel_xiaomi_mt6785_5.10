@@ -30,6 +30,7 @@
 #include <linux/compat.h>
 
 #define TS_DT_COMPATIBLE "goodix,gt9886"
+#define TS_DT_COMPATIBLE_ALT "goodix,gt9885"
 #define TS_DRIVER_NAME "GT9886"
 #define I2C_MAX_TRANSFER_SIZE	256
 #define TS_ADDR_LENGTH		2
@@ -2340,6 +2341,7 @@ static int goodix_i2c_remove(struct i2c_client *client)
 #ifdef CONFIG_OF
 static const struct of_device_id i2c_matches[] = {
 	{.compatible = TS_DT_COMPATIBLE,},
+	{.compatible = TS_DT_COMPATIBLE_ALT,},
 	{},
 };
 MODULE_DEVICE_TABLE(of, i2c_matches);

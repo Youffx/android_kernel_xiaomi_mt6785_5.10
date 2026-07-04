@@ -94,7 +94,7 @@ out1:
 	gen_pool_free(tmem_carveout_heap[pool_idx]->pool, paddr, size);
 out2:
 	spin_unlock_irqrestore(&tmem_carveout_lock, lock_flags);
-	pr_info("%s fail: size=0x%lx, gen_pool_avail=0x%lx, pool_idx=%d\n",
+	pr_info("%s fail: size=0x%lx, gen_pool_avail=0x%zu, pool_idx=%lu\n",
 			__func__, size,
 			gen_pool_avail(tmem_carveout_heap[pool_idx]->pool), pool_idx);
 
@@ -122,7 +122,7 @@ int tmem_carveout_heap_free(enum MTEE_MCHUNKS_ID mchunk_id, u32 handle)
 	}
 	spin_unlock_irqrestore(&tmem_carveout_lock, lock_flags);
 
-	pr_info("%s fail: handle=0x%lx, idx=0x%lx\n",
+	pr_info("%s fail: handle=0x%x, idx=0x%lx\n",
 			__func__, handle, pool_idx);
 
 	return TMEM_KPOOL_FREE_CHUNK_FAILED;

@@ -5,6 +5,7 @@
 #include <linux/pm_qos.h>
 #include <trace/hooks/power.h>
 #include <linux/kallsyms.h>
+#include <linux/slab.h>
 #include <linux/hashtable.h>
 
 #include <perf_tracker_internal.h>

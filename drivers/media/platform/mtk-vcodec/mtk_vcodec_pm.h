@@ -165,7 +165,7 @@ enum mtk_dec_dtsi_m4u_port_idx {
 	NUM_MAX_VDEC_M4U_PORT
 };
 
-static char *dec_port_name[NUM_MAX_VDEC_M4U_PORT+1] = {
+static char *dec_port_name[NUM_MAX_VDEC_M4U_PORT+1] __maybe_unused = {
 	[VDEC_M4U_PORT_MC]                  = "MC",
 	[VDEC_M4U_PORT_UFO]                 = "UFO",
 	[VDEC_M4U_PORT_PP]                  = "PP",

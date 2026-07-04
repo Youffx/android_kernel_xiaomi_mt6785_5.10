@@ -37,4 +37,9 @@ int adsp_mbox_send(struct mtk_mbox_pin_send *pin_send, void *msg,
 int adsp_mbox_probe(struct platform_device *pdev);
 struct mtk_mbox_pin_send *get_adsp_mbox_pin_send(int index);
 struct mtk_mbox_pin_recv *get_adsp_mbox_pin_recv(int index);
+void adsp_mbox_set_irq_reg(void __iomem *set_reg, void __iomem *clr_reg);
+void adsp_mbox_process_msg(u32 core_id, void *msg, u32 len);
+void adsp_mbox_ipc_handler(unsigned int cid);
+int adsp_mbox_pin_cb(unsigned int id, void *prdata, void *buf,
+		     unsigned int len);
 #endif  /* __ADSP_MBOX_H__ */

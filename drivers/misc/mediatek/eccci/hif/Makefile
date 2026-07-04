@@ -22,6 +22,7 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/include
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/conn_md/include/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/scp/mt6873
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/hif/
 
 
 # hif objects
@@ -35,6 +36,7 @@ ccci_hif_all-y := ccci_hif.o \
 		dpmaif_bat.o dpmaif_bat_v3.o dpmaif_debug.o net_speed.o net_pool.o
 
 ccci_hif_all-y += ccci_ringbuf.o ccci_hif_ccif.o
+ccci_hif_all-y += md_spd_dvfs_fn.o md_spd_dvfs_method.o
 
 endif
 

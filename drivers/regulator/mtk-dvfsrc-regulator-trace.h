@@ -49,7 +49,7 @@ DEFINE_EVENT(mtk_pm_qos_request, mtk_pm_qos_update_request,
 #endif /* _TRACE_MTK_QOS_REGULATOR_H */
 /* This part must be outside protection */
 #undef TRACE_INCLUDE_PATH
-#define TRACE_INCLUDE_PATH .
+#define TRACE_INCLUDE_PATH ../../drivers/regulator
 
 #undef TRACE_INCLUDE_FILE
 #define TRACE_INCLUDE_FILE mtk-dvfsrc-regulator-trace

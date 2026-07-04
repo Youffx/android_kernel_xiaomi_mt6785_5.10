@@ -35,13 +35,13 @@
 #include <asm/barrier.h>
 #include <soc/mediatek/smi.h>
 #if IS_ENABLED(CONFIG_MTK_SMI)
-#include <../misc/mediatek/smi/mtk-smi-dbg.h>
+#include "../misc/mediatek/smi/mtk-smi-dbg.h"
 #endif
 #if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
-#include <../misc/mediatek/iommu/iommu_debug.h>
+#include "../misc/mediatek/iommu/iommu_debug.h"
 #endif
 #if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_SECURE)
-#include <../misc/mediatek/iommu/iommu_secure.h>
+#include "../misc/mediatek/iommu/iommu_secure.h"
 #endif
 
 #include "mtk_iommu.h"
@@ -980,7 +980,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
 		ret = readl_poll_timeout_atomic(data->base + REG_MMU_CPE_DONE,
 						tmp, tmp != 0, 10, 1000);
 		if (ret) {
-			pr_warn("Partial TLB flush timed out, (%d, %d), iova:0x%llx,0x%zx\n",
+			pr_warn("Partial TLB flush timed out, (%d, %d), iova:0x%lx,0x%zx\n",
 				data->plat_data->iommu_type, data->plat_data->iommu_id,
 				iova, size);
 			if (MTK_IOMMU_HAS_FLAG(data->plat_data, TLB_SYNC_EN))
@@ -1003,6 +1003,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
 		mtk_iommu_tlb_flush_all(orig_data);
 }
 
+#if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
 static void mtk_iommu_dump_tf_iova(struct mtk_iommu_data *data,
 		enum iommu_bank bank, u64 fault_iova)
 {
@@ -1034,6 +1035,7 @@ static void mtk_iommu_dump_tf_iova(struct mtk_iommu_data *data,
 		mtk_iova_map_dump(fault_iova, data->plat_data->tab_id);
 #endif
 }
+#endif
 
 #if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_SECURE)
 static irqreturn_t mtk_iommu_dump_sec_bank(struct mtk_iommu_data *data,
@@ -1106,6 +1108,7 @@ static irqreturn_t mtk_iommu_isr_sec(int irq, struct mtk_iommu_data *data)
 }
 #endif
 
+#if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
 static void peri_iommu_read_data(void __iomem *base, enum peri_iommu iommu_id)
 {
 	u32 int_state0, int_state1, fault_id, va34_32, pa34_32, regval;
@@ -1188,6 +1191,7 @@ void mtk_peri_iommu_isr(struct mtk_iommu_data *data, u32 bus_id)
 	mtk_iommu_tlb_flush_all(data);
 	mtk_iommu_isr_record(data);
 }
+#endif
 
 #if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_SECURE)
 static void mtk_iommu_mau_init(struct mtk_iommu_data *data);
@@ -1230,7 +1234,7 @@ static void mtk_iommu_isr_other(struct mtk_iommu_data *data,
 			fault_iova |= (u64)va_33_32 << 32;
 		}
 
-		dev_warn(dev, "L2 table walk fault: iova=0x%lx, layer=%d\n",
+		dev_warn(dev, "L2 table walk fault: iova=0x%llx, layer=%d\n",
 			 fault_iova, layer);
 	}
 
@@ -1318,8 +1322,10 @@ static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
 		layer = fault_iova & F_MMU_FAULT_VA_LAYER_BIT;
 		write = fault_iova & F_MMU_FAULT_VA_WRITE_BIT;
 
+#if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
 		pr_info("%s, iommu:(%d,%d) reg_raw_data: int_status:0x%x,0x%x, int_id:0x%x, int_va:0x%llx, int_pa:0x%llx\n",
 			__func__, type, id, int_state0, int_state1, regval, fault_iova, fault_pa);
+#endif
 
 		if (MTK_IOMMU_HAS_FLAG(data->plat_data, IOVA_34_EN)) {
 			va34_32 = FIELD_GET(F_MMU_INVAL_VA_34_32_MASK, fault_iova);
@@ -3241,6 +3247,18 @@ static const struct mtk_iommu_plat_data mt6779_data = {
 	.larbid_remap  = {{0}, {1}, {2}, {3}, {5}, {7, 8}, {10}, {9}},
 };
 
+static const struct mtk_iommu_plat_data mt6785_data = {
+	.m4u_plat      = M4U_MT6785,
+	.flags         = HAS_SUB_COMM | OUT_ORDER_WR_EN | WR_THROT_EN |
+			 NOT_STD_AXI_MODE | SHARE_PGTABLE,
+	.inv_sel_reg   = REG_MMU_INV_SEL_GEN2,
+	.iova_region   = single_domain,
+	.iova_region_nr = ARRAY_SIZE(single_domain),
+	.iommu_id      = DISP_IOMMU,
+	.iommu_type     = MM_IOMMU,
+	.larbid_remap  = {{0}, {1}, {2}, {3}, {5}, {6}, {7}, {8}},
+};
+
 /* use the same data as mt6853 */
 static const struct mtk_iommu_plat_data mt6833_data = {
 	.m4u_plat = M4U_MT6833,
@@ -3616,6 +3634,7 @@ static const struct mtk_iommu_plat_data mt8192_data = {
 };
 
 static const struct of_device_id mtk_iommu_of_ids[] = {
+	{ .compatible = "mediatek,iommu_v0", .data = &mt6785_data},
 	{ .compatible = "mediatek,mt2712-m4u", .data = &mt2712_data},
 	{ .compatible = "mediatek,mt6779-m4u", .data = &mt6779_data},
 	{ .compatible = "mediatek,mt6789-disp-iommu", .data = &mt6789_data},

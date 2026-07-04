@@ -15,7 +15,7 @@
 #include <linux/io.h>
 #include <linux/idr.h>
 #include <linux/dma-mapping.h>
-#include <musb_main.h>
+#include "musb_main.h"
 
 #define DRIVER_AUTHOR "Mentor Graphics, Texas Instruments, Nokia"
 #define DRIVER_DESC "Inventra Dual-Role USB Controller Driver"

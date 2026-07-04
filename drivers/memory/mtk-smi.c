@@ -19,7 +19,7 @@
 #include <soc/mediatek/smi.h>
 #include <dt-bindings/memory/mt2701-larb-port.h>
 #include <dt-bindings/memory/mtk-memory-port.h>
-#include <../misc/mediatek/include/mt-plat/aee.h>
+#include "../misc/mediatek/include/mt-plat/aee.h"
 
 #include <linux/kthread.h>
 
@@ -506,7 +506,7 @@ mtk_smi_larb_bind(struct device *dev, struct device *master, void *data)
 			larb->bank = larb_mmu[i].bank;
 			if (log_level & 1 << log_config_bit)
 				dev_notice(dev,
-					"[SMI]larb%d bind ptr_mmu:0x%x val_mmu_32:0x%x bit32:%u\n",
+					"[SMI]larb%d bind ptr_mmu:%p val_mmu_32:0x%x bit32:%u\n",
 					i, larb->mmu, *((unsigned int *)(larb->mmu)),
 					larb->bank[i]);
 			return 0;
@@ -540,7 +540,7 @@ static void mtk_smi_larb_config_port_gen2_general(struct device *dev)
 			writel(reg, larb->base + SMI_LARB_NONSEC_CON(i));
 			if (log_level & 1 << log_config_bit)
 				dev_notice(dev,
-					"[SMI]larb:%d port:%d mmu:%u bit32:%u offset:%#x reg:%#x\n",
+					"[SMI]larb:%d port:%d mmu:%p bit32:%u offset:%#x reg:%#x\n",
 					larb->larbid, i, larb->mmu, larb->bank[i],
 					SMI_LARB_NONSEC_CON(i), reg);
 		}

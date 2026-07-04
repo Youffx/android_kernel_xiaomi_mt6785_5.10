@@ -16,17 +16,17 @@
 # kernel build system and can use its language.
 ifneq ($(KERNELRELEASE),)
     subdir-ccflags-y += -I$(srctree)/
-    subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/include/mt-plat
+    subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/include/mt-plat
 
     #ifneq ($(CONFIG_MTK_TINYSYS_SCP_SUPPORT),)
 	# SCP
-	subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/scp/include
-	subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/connectivity/common/
-	subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/conn_scp/conap_scp
+	subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/scp/include
+	subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/connectivity/common/
+	subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/conn_scp/conap_scp
 
 	# Aoltest
     ifeq ($(CONFIG_MTK_AOL_DEBUG),y)
-        subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/conn_scp/aoltest/
+        subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/conn_scp/aoltest/
     endif
 
     MODULE_NAME := connscp

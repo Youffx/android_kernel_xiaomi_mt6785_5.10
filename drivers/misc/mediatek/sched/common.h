@@ -20,7 +20,6 @@ unsigned long mtk_cpu_util(int cpu, unsigned long util_cfs,
 				struct task_struct *p);
 int dequeue_idle_cpu(int cpu);
 #endif
-__always_inline
 unsigned long mtk_uclamp_rq_util_with(struct rq *rq, unsigned long util,
 				  struct task_struct *p);
 

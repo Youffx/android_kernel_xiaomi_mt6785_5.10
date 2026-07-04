@@ -732,11 +732,11 @@ void mtk_vcodec_set_log(struct mtk_vcodec_dev *dev, const char *val,
 	enum mtk_vcodec_log_index log_index)
 {
 	int i, argc = 0;
-	char argv[MAX_SUPPORTED_LOG_PARAMS_COUNT * 2][LOG_PARAM_INFO_SIZE] = {0};
+	static char argv[MAX_SUPPORTED_LOG_PARAMS_COUNT * 2][LOG_PARAM_INFO_SIZE];
 	char *temp = NULL;
 	char *token = NULL;
 	long temp_val = 0;
-	char log[LOG_PROPERTY_SIZE] = {0};
+	static char log[LOG_PROPERTY_SIZE];
 
 	if (dev == NULL || val == NULL || strlen(val) == 0)
 		return;
@@ -784,5 +784,7 @@ void mtk_vcodec_set_log(struct mtk_vcodec_dev *dev, const char *val,
 EXPORT_SYMBOL_GPL(mtk_vcodec_set_log);
 
 
+bool is_disable_map_sec(void) { return false; }
+EXPORT_SYMBOL(is_disable_map_sec);
 MODULE_LICENSE("GPL v2");
 

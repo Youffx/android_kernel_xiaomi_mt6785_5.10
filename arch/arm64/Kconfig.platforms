@@ -149,6 +149,13 @@ config ARCH_MEDIATEK
 	  This enables support for MediaTek MT27xx, MT65xx, MT76xx
 	  & MT81xx ARMv8 SoCs
 
+config MACH_MT6785
+	bool "MediaTek MT6785 SoC"
+	depends on ARCH_MEDIATEK
+	default y
+	help
+	  This enables support for MediaTek MT6785 (Helio G95/G96) SoC.
+
 config ARCH_MESON
 	bool "Amlogic Platforms"
 	select COMMON_CLK

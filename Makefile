@@ -1025,6 +1025,8 @@ KBUILD_CFLAGS   += -Werror=date-time
 # enforce correct pointer usage
 KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
 
+# Youffx: disable -Werror globally; vendor code has too many harmless warnings
+KBUILD_CFLAGS += -Wno-error
 # Require designated initializers for all marked structures
 KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
 

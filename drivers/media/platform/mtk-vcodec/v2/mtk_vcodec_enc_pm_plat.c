@@ -16,21 +16,20 @@
 #include "mtk_vcu.h"
 
 #define USE_GCE 0
-#if ENC_DVFS
 #include <linux/pm_opp.h>
 #include <linux/regulator/consumer.h>
+#if ENC_DVFS
 #include "vcodec_dvfs.h"
 #define STD_VENC_FREQ 250000000
 #endif
 
-#if ENC_EMI_BW
 //#include <linux/interconnect-provider.h>
 #include "mtk-interconnect.h"
 #include "vcodec_bw.h"
-#endif
 
 //#define VENC_PRINT_DTS_INFO
 
+#if ENC_DVFS
 static bool mtk_enc_tput_init(struct mtk_vcodec_dev *dev)
 {
 	const int tp_item_num = 4;
@@ -262,6 +261,7 @@ static void mtk_enc_tput_deinit(struct mtk_vcodec_dev *dev)
 		dev->venc_port_bw = 0;
 	}
 }
+#endif
 
 void mtk_prepare_venc_dvfs(struct mtk_vcodec_dev *dev)
 {

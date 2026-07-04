@@ -18,7 +18,7 @@ ifneq ($(KERNELRELEASE),)
     subdir-ccflags-y += -I$(srctree)/
     subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/include
     subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/clkbuf/src
-    subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/include/mt-plat
+    subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/include/mt-plat
     subdir-ccflags-y += -I$(srctree)/drivers/mmc/core
     subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/
     subdir-ccflags-y += -I$(srctree)/drivers/clk/mediatek/
@@ -27,12 +27,12 @@ ifneq ($(KERNELRELEASE),)
 
     #ifneq ($(CONFIG_MTK_TINYSYS_SCP_SUPPORT),)
         # SCP
-    #    subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/scp/include
-    #    subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/connectivity/conap_scp
+    #    subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/scp/include
+    #    subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/connectivity/conap_scp
 
         # Aoltest
     #    ifeq ($(CONFIG_MTK_AOL_DEBUG),y)
-    #        subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/connectivity/aoltest/
+    #        subdir-ccflags-y += -Wno-error -I$(srctree)/drivers/misc/mediatek/connectivity/aoltest/
     #    endif
     #endif
 

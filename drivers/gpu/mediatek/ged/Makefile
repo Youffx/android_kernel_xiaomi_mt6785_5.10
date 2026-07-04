@@ -47,6 +47,24 @@ ifeq ($(CONFIG_MTK_GPUFREQ_V2),y)
 ccflags-y += -DGED_DCS_POLICY
 endif
 
+ifeq ($(CONFIG_MACH_MT6785),y)
+ccflags-y += -DMTK_GED_KPI
+ccflags-y += -DGED_KPI_CPU_BOOST
+ifeq ($(CONFIG_MTK_GPU_COMMON_DVFS_SUPPORT),y)
+ccflags-y += -DGED_ENABLE_FB_DVFS
+ccflags-y += -DGED_ENABLE_DYNAMIC_DVFS_MARGIN
+ccflags-y += -DGED_CONFIGURE_LOADING_BASE_DVFS_STEP
+ccflags-y += -DGED_ENABLE_TIMER_BASED_DVFS_MARGIN
+endif
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/cmdq/v3
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/cmdq/v3/mt6785
+ccflags-y += \
+	-I$(MTK_TOP)/base/power/mt6785/ \
+	-I$(srctree)/drivers/misc/mediatek/video/mt6785/videox \
+	-I$(srctree)/drivers/misc/mediatek/video/mt6785/dispsys \
+	-I$(srctree)/drivers/misc/mediatek/sspm/mt6785
+endif
+
 ccflags-y += \
 		-I$(srctree)/include/ \
 		-I$(MTK_TOP)/include/ \
@@ -64,26 +82,10 @@ ccflags-y += \
 		-I$(srctree)/drivers/dma-buf/heaps/
 ccflags-y += \
 		-I$(srctree)/drivers/misc/mediatek/cmdq/v3
-ccflags-y += -I$(srctree)/drivers/gpu/mediatek/gpueb
-ccflags-y += \
-		-I$(srctree)/drivers/misc/mediatek/sspm/ \
-		-I$(srctree)/drivers/misc/mediatek/sspm/v3 \
-		-I$(srctree)/drivers/misc/mediatek/qos/ \
-		-I$(srctree)/drivers/gpu/mediatek/gpu_bm/
-
 ifeq ($(CONFIG_DEBUG_FS),y)
 ccflags-y += -DGED_DEBUG_FS
 ged-y += \
 	src/ged_debugFS.o
-endif
-
-ifeq ($(CONFIG_MTK_GPUFREQ_V2),y)
-ged-y += \
-	src/ged_gpufreq_v2.o \
-	src/ged_dcs.o
-else
-ged-y += \
-	src/ged_gpufreq_v1.o
 endif
 
 ged-y += \
@@ -95,15 +97,8 @@ ged-y += \
 	src/ged_log.o \
 	src/ged_bridge.o \
 	src/ged_monitor_3D_fence.o \
-	src/ged_notify_sw_vsync.o \
 	src/ged_hashtable.o \
-	src/ged_thread.o \
-	src/ged_ge.o \
-	src/ged_dvfs.o \
-	src/ged_gpu_tuner.o \
-	src/ged_kpi.o \
-	src/ged_eb.o \
-	src/ged_gpu_bm.o
+	src/ged_thread.o
 
 ged-$(CONFIG_SYNC_FILE) += src/ged_sync.o
 

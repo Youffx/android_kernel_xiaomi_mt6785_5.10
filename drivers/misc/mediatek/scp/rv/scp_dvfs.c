@@ -63,6 +63,12 @@
 
 #if IS_ENABLED(CONFIG_MFD_MT6397)
 #define pmic_main_chip			mt6397_chip
+#else
+struct mt6397_chip {
+	struct device *dev;
+	struct regmap *regmap;
+};
+#define pmic_main_chip			mt6397_chip
 #endif
 
 #define PMIC_PHANDLE_NAME		"pmic"

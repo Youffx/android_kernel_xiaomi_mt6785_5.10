@@ -23,7 +23,7 @@ ccflags-y += -I$(srctree)/drivers/dma-buf/heaps
 
 $(info ************  drivers/trusty/mtee-kree mk ************)
 
-#ccflags-y := -I$(srctree)/drivers/misc/mediatek/geniezone/public -Werror $(ccflags-y)
+#ccflags-y := -I$(srctree)/drivers/misc/mediatek/geniezone/public -Wno-error $(ccflags-y)
 
 ifneq ($(filter y m, $(CONFIG_TEE)),)
   ccflags-y += -I$(srctree)/arch/arm/mach-$(MTK_PLATFORM)/include/trustzone/utils/tlutils

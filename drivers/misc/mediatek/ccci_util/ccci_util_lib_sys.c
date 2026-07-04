@@ -109,7 +109,7 @@ static int trigger_md_boot(int md_id)
 		CCCI_UTIL_INF_MSG("invalid md_id = %d\n", md_id);
 		return -1;
 	}
-	if ((md_id < MAX_MD_NUM) && (boot_md_func[md_id] != NULL))
+	if (boot_md_func[md_id] != NULL)
 		return (boot_md_func[md_id]) (md_id);
 
 	return -1;
@@ -254,11 +254,7 @@ int __attribute__((weak)) ccci_get_plat_ft_inf(char buf[], int size)
 
 static ssize_t ccci_ft_inf_show(char *buf)
 {
-	if (ccci_get_plat_ft_inf) {
-		CCCI_UTIL_INF_MSG("using platform setting\n");
-		return (ssize_t)ccci_get_plat_ft_inf(buf, 4095);
-	}
-	/* Enter here means using default setting */
+	CCCI_UTIL_INF_MSG("using platform setting\n");
 	return (ssize_t)ccci_get_plat_ft_inf(buf, 4095);
 }
 

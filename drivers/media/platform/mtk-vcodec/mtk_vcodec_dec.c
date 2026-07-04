@@ -114,6 +114,7 @@ static bool mtk_vdec_is_vcu(void)
 	return false;
 }
 
+#if IS_ENABLED(CONFIG_MTK_TINYSYS_VCP_SUPPORT)
 static void set_vdec_vcp_data(struct mtk_vcodec_ctx *ctx, enum vcp_reserve_mem_id_t id)
 {
 	char tmp_buf[1024] = "";
@@ -126,9 +127,7 @@ static void set_vdec_vcp_data(struct mtk_vcodec_ctx *ctx, enum vcp_reserve_mem_i
 		mtk_v4l2_debug(3, "[%d] mtk_vdec_property_prev %s",
 					ctx->id, mtk_vdec_property_prev);
 
-		// set vcp property every time
-		if (/* strcmp(mtk_vdec_property_prev, tmp_buf) != 0 &&  */
-			strcmp(tmp_buf, "") != 0) {
+		if (strcmp(tmp_buf, "") != 0) {
 			if (vdec_if_set_param(ctx,
 				SET_PARAM_VDEC_PROPERTY,
 				tmp_buf)  != 0) {
@@ -144,9 +143,7 @@ static void set_vdec_vcp_data(struct mtk_vcodec_ctx *ctx, enum vcp_reserve_mem_i
 		mtk_v4l2_debug(3, "[%d] mtk_vdec_vcp_log %s", ctx->id, tmp_buf);
 		mtk_v4l2_debug(3, "[%d] mtk_vdec_vcp_log_prev %s", ctx->id, mtk_vdec_vcp_log_prev);
 
-		// set vcp log every time
-		if (/* strcmp(mtk_vdec_vcp_log_prev, tmp_buf) != 0 &&  */
-			strcmp(tmp_buf, "") != 0) {
+		if (strcmp(tmp_buf, "") != 0) {
 			if (vdec_if_set_param(ctx,
 				SET_PARAM_VDEC_VCP_LOG_INFO,
 				tmp_buf)  != 0) {
@@ -159,6 +156,7 @@ static void set_vdec_vcp_data(struct mtk_vcodec_ctx *ctx, enum vcp_reserve_mem_i
 		mtk_v4l2_err("[%d] id not support %d", ctx->id, id);
 	}
 }
+#endif
 
 static void get_supported_format(struct mtk_vcodec_ctx *ctx)
 {
@@ -1317,10 +1315,12 @@ void mtk_vcodec_dec_set_default_params(struct mtk_vcodec_ctx *ctx)
 
 	get_supported_format(ctx);
 	get_supported_framesizes(ctx);
+#if IS_ENABLED(CONFIG_MTK_TINYSYS_VCP_SUPPORT)
 	if (mtk_vcodec_vcp & (1 << MTK_INST_DECODER)) {
 		set_vdec_vcp_data(ctx, VDEC_VCP_LOG_INFO_ID);
 		set_vdec_vcp_data(ctx, VDEC_SET_PROP_MEM_ID);
 	}
+#endif
 	q_data = &ctx->q_data[MTK_Q_DATA_SRC];
 	memset(q_data, 0, sizeof(struct mtk_q_data));
 	q_data->visible_width = DFT_CFG_WIDTH;

@@ -9,6 +9,7 @@
 #include "adsp_core.h"
 #include "adsp_platform_driver.h"
 #include "adsp_platform.h"
+#include "adsp_mbox.h"
 
 #ifdef ADSP_BASE
 #undef ADSP_BASE
@@ -124,5 +125,8 @@ void adsp_hardware_init(struct adspsys_priv *adspsys)
 
 	mt_base = adspsys->cfg;
 	axibus_idle_val = adspsys->desc->axibus_idle_val;
+
+	/* Youffx: set up mbox IRQ regs for DRAM-based IPI (MT6785 etc.) */
+	adsp_mbox_set_irq_reg(ADSP_SW_INT_SET, ADSP_SW_INT_CLR);
 }
 

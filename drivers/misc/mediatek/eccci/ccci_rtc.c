@@ -29,7 +29,7 @@ static int g_ccci_rtc_val;
 #ifndef CCCI_LOG_LEVEL /* for platform override */
 #define CCCI_LOG_LEVEL CCCI_LOG_CRITICAL_UART
 #endif
-unsigned int ccci_debug_enable = CCCI_LOG_LEVEL;
+/* ccci_debug_enable defined in ccci_core.c */
 #endif
 
 int mtk_crystal_exist_status(void)

@@ -1,0 +1,1 @@
+obj-$(CONFIG_MTK_LEGACY_THERMAL) += src/

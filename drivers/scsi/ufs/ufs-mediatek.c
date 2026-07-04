@@ -2053,7 +2053,6 @@ static void ufs_mtk_dbg_register_dump(struct ufs_hba *hba)
 	/* Direct debugging information to REG_MTK_PROBE */
 	ufs_mtk_dbg_sel(hba);
 	ufshcd_dump_regs(hba, REG_UFS_PROBE, 0x4, "Debug Probe ");
-	ufs_mtk_dbg_dump(100);
 }
 
 static int ufs_mtk_setup_regulators(struct ufs_hba *hba, bool on)
@@ -2482,9 +2481,9 @@ int ufs_mtk_pltfrm_resume(struct device *dev)
 
 int ufs_mtk_pltfrm_runtime_suspend(struct device *dev)
 {
+	struct ufs_hba *hba = dev_get_drvdata(dev);
 	int ret;
 #if defined(CONFIG_UFSFEATURE)
-	struct ufs_hba *hba = dev_get_drvdata(dev);
 	struct ufsf_feature *ufsf = ufs_mtk_get_ufsf(hba);
 
 	if (ufsf->hba)
@@ -2513,9 +2512,9 @@ int ufs_mtk_pltfrm_runtime_suspend(struct device *dev)
 
 int ufs_mtk_pltfrm_runtime_resume(struct device *dev)
 {
+	struct ufs_hba *hba = dev_get_drvdata(dev);
 	int ret;
 #if defined(CONFIG_UFSFEATURE)
-	struct ufs_hba *hba = dev_get_drvdata(dev);
 	struct ufsf_feature *ufsf = ufs_mtk_get_ufsf(hba);
 	bool is_link_off = ufshcd_is_link_off(hba);
 #endif

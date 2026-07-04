@@ -46,7 +46,7 @@ TRACE_EVENT(layer_bw,
 #endif /* _MTK_LAYER_LAYOUT_TRACE_H_ */
 
 #undef TRACE_INCLUDE_PATH
-#define TRACE_INCLUDE_PATH .
+#define TRACE_INCLUDE_PATH ../../drivers/gpu/drm/mediatek/mediatek_v2
 #undef TRACE_INCLUDE_FILE
 #define TRACE_INCLUDE_FILE mtk_layer_layout_trace
 #include <trace/define_trace.h>

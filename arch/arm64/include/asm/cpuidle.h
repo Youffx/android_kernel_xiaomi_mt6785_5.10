@@ -2,6 +2,7 @@
 #ifndef __ASM_CPUIDLE_H
 #define __ASM_CPUIDLE_H
 
+#include <linux/errno.h>
 #include <asm/proc-fns.h>
 
 #ifdef CONFIG_CPU_IDLE

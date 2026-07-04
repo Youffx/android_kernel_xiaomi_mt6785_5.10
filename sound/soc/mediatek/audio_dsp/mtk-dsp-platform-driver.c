@@ -215,7 +215,7 @@ static int ktv_status_get(struct snd_kcontrol *kcontrol,
 			  struct snd_ctl_elem_value *ucontrol)
 {
 	ucontrol->value.integer.value[0] = ktv_status;
-	pr_debug("%s() ktv_status = %ld\n", __func__, ktv_status);
+	pr_debug("%s() ktv_status = %d\n", __func__, ktv_status);
 	return 0;
 }
 
@@ -1384,7 +1384,7 @@ static int mtk_dsp_probe(struct snd_soc_component *component)
 
 	for (id = 0; id < get_adsp_core_total(); id++) {
 		if (adsp_irq_registration(id, ADSP_IRQ_AUDIO_ID, audio_irq_handler, dsp) < 0)
-			pr_info("%s, ADSP_IRQ_AUDIO not supported\n");
+			pr_info("%s, ADSP_IRQ_AUDIO not supported\n", __func__);
 	}
 
 	tasklet_setup(&dsp->dsp_tasklet[ADSP_A_ID], audio_dsp_tasklet_core0);

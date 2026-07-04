@@ -78,6 +78,9 @@
 #include <linux/crc32.h> /* For counting font checksums */
 #include <linux/uaccess.h>
 #include <asm/fb.h>
+
+extern bool fb_center_logo;
+extern int fb_logo_count;
 #include <asm/irq.h>
 
 #include "fbcon.h"

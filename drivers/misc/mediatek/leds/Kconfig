@@ -1,0 +1,45 @@
+config MTK_LEDS
+	bool "MediaTek LED driver"
+	help
+	  This selects the MediaTek LED driver.
+
+config LEDS_MT6357
+	bool "MT6357 PMIC LED driver"
+	depends on MTK_LEDS
+	help
+	  LED driver for MT6357 PMIC.
+
+config LEDS_MTK_DISP
+	bool "MediaTek Display Backlight LED driver"
+	depends on MTK_LEDS
+	help
+	  Backlight LED control via display path.
+
+config LEDS_MTK_PWM
+	bool "MediaTek PWM Backlight LED driver"
+	depends on MTK_LEDS
+	help
+	  Backlight LED control via PWM.
+
+config LEDS_MTK_I2C
+	bool "MediaTek I2C Backlight LED driver"
+	depends on MTK_LEDS
+	help
+	  Backlight LED control via I2C gate IC.
+
+config BACKLIGHT_SUPPORT_LP8557
+	bool "LP8557 backlight I2C"
+	depends on LEDS_MTK_I2C
+
+config BACKLIGHT_SUPPORT_LM3697
+	bool "LM3697 backlight I2C"
+	depends on LEDS_MTK_I2C
+
+config CONTROL_BL_TEMPERATURE
+	bool "Brightness thermal control"
+	depends on MTK_LEDS
+
+config LIGHTNESS_MAPPING_VALUE
+	int "Lightness mapping value"
+	depends on MTK_LEDS
+	default 100

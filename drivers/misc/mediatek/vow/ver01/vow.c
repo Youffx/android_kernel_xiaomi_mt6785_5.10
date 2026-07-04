@@ -112,7 +112,6 @@ static bool vow_IPICmd_Send(uint8_t data_type,
 			    char *payload);
 static void vow_IPICmd_Received(struct ipi_msg_t *ipi_msg);
 static bool vow_IPICmd_ReceiveAck(struct ipi_msg_t *ipi_msg);
-static void vow_Task_Unloaded_Handling(void);
 #endif  /* #if IS_ENABLED(CONFIG_MTK_TINYSYS_SCP_SUPPORT) */
 static bool VowDrv_SetFlag(int type, unsigned int set);
 static int VowDrv_GetHWStatus(void);
@@ -205,11 +204,6 @@ static struct
  * DSP IPI HANDELER
  *****************************************************************************/
 #if IS_ENABLED(CONFIG_MTK_TINYSYS_SCP_SUPPORT)
-static void vow_Task_Unloaded_Handling(void)
-{
-	VOWDRV_DEBUG("%s()\n", __func__);
-}
-
 static bool vow_IPICmd_ReceiveAck(struct ipi_msg_t *ipi_msg)
 {
 	bool result = false;
@@ -486,13 +480,12 @@ static void vow_service_Init(void)
 	unsigned int vow_ipi_buf[1];
 
 	VOWDRV_DEBUG("%s():%x\n", __func__, init_flag);
-	audio_load_task(TASK_SCENE_VOW);
+	// audio_load_task(TASK_SCENE_VOW); // 5.10: task init handled by audio_ipi
 	if (init_flag != 1) {
 
 		/*register IPI handler*/
 		audio_task_register_callback(TASK_SCENE_VOW,
-					     vow_IPICmd_Received,
-					     vow_Task_Unloaded_Handling);
+					     vow_IPICmd_Received);
 		/*Initialization*/
 		VowDrv_Wait_Queue_flag = 0;
 		VoiceData_Wait_Queue_flag = 0;
@@ -1482,7 +1475,7 @@ static void vow_service_CloseDumpFile(void)
 
 static void vow_service_OpenDumpFile_internal(void)
 {
-	struct timespec curr_tm;
+	struct timespec64 curr_tm;
 	char string_time[16];
 	char string_input_pcm[16] = "input_pcm.pcm";
 	char string_echo_pcm[16] = "echo_ref.pcm";
@@ -1494,8 +1487,8 @@ static void vow_service_OpenDumpFile_internal(void)
 	char path_recog[64];
 
 	VOWDRV_DEBUG("+%s()\n", __func__);
-	memset(&curr_tm, 0, sizeof(struct timespec));
-	getnstimeofday(&curr_tm);
+	memset(&curr_tm, 0, sizeof(struct timespec64));
+	ktime_get_real_ts64(&curr_tm);
 
 	memset(string_time, '\0', 16);
 	if (sprintf(string_time, "%.2lu_%.2lu_%.2lu_%.3lu",

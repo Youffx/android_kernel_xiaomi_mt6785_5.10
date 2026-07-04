@@ -356,7 +356,7 @@ EXPORT_SYMBOL_GPL(mtk_map_util_freq);
 #endif
 #else
 
-static int init_opp_cap_info(struct proc_dir_entry *dir) { return 0; }
-#define clear_opp_cap_info()
+int init_opp_cap_info(struct proc_dir_entry *dir) { return 0; }
+void clear_opp_cap_info(void) { }
 
 #endif

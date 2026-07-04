@@ -11,6 +11,7 @@
 #include <linux/of_address.h>
 #endif
 #include <linux/clk.h> /* for clk_prepare/un* */
+#include <linux/of_address.h>
 
 #include "ccci_config.h"
 #include "ccci_common_config.h"
@@ -21,7 +22,6 @@
 #ifdef FEATURE_SCP_CCCI_SUPPORT
 #include "scp_ipi.h"
 
-#ifdef CCCI_KMODULE_ENABLE
 void ccci_scp_md_state_sync(int md_state);
 
 struct ccci_fsm_scp ccci_scp_ctl = {
@@ -48,8 +48,7 @@ void ccci_scp_md_state_sync(int md_state)
 #ifndef CCCI_LOG_LEVEL /* for platform override */
 #define CCCI_LOG_LEVEL CCCI_LOG_CRITICAL_UART
 #endif
-unsigned int ccci_debug_enable = CCCI_LOG_LEVEL;
-#endif
+/* ccci_debug_enable defined in ccci_core.c */
 
 static atomic_t scp_state = ATOMIC_INIT(SCP_CCCI_STATE_INVALID);
 static struct ccci_ipi_msg scp_ipi_tx_msg;

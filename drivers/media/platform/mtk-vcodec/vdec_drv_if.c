@@ -25,15 +25,22 @@ const struct vdec_common_if *get_dec_vcp_if(void);
 #endif
 
 
-static const struct vdec_common_if * get_data_path_ptr(void)
+static const struct vdec_common_if *get_data_path_ptr(void)
 {
+#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCU)
 	if (VCU_FPTR(vcu_get_plat_device)) {
-		if (mtk_vcodec_vcp & (1 << MTK_INST_DECODER))
+		if (mtk_vcodec_vcp & (1 << MTK_INST_DECODER)) {
+#if IS_ENABLED(CONFIG_MTK_TINYSYS_VCP_SUPPORT)
 			return get_dec_vcp_if();
-		else
+#endif
+		} else
 			return get_dec_vcu_if();
-	} else
-		return get_dec_vcp_if();
+	}
+#endif
+#if IS_ENABLED(CONFIG_MTK_TINYSYS_VCP_SUPPORT)
+	return get_dec_vcp_if();
+#endif
+	return NULL;
 }
 
 int vdec_if_init(struct mtk_vcodec_ctx *ctx, unsigned int fourcc)

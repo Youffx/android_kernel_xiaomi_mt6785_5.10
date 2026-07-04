@@ -1571,7 +1571,7 @@ static bool fb_do_apertures_overlap(struct apertures_struct *gena,
 	return false;
 }
 
-static void do_unregister_framebuffer(struct fb_info *fb_info);
+static int do_unregister_framebuffer(struct fb_info *fb_info);
 
 #define VGA_FB_PHYS 0xA0000
 static void do_remove_conflicting_framebuffers(struct apertures_struct *a,
@@ -1723,7 +1723,7 @@ static void unlink_framebuffer(struct fb_info *fb_info)
 	fb_info->dev = NULL;
 }
 
-static void do_unregister_framebuffer(struct fb_info *fb_info)
+static int do_unregister_framebuffer(struct fb_info *fb_info)
 {
 	unlink_framebuffer(fb_info);
 	if (fb_info->pixmap.addr &&
@@ -1746,6 +1746,7 @@ static void do_unregister_framebuffer(struct fb_info *fb_info)
 
 	/* this may free fb info */
 	put_fb_info(fb_info);
+	return 0;
 }
 
 /**
@@ -1870,12 +1871,13 @@ EXPORT_SYMBOL(register_framebuffer);
  *      that the driver implements fb_open() and fb_release() to
  *      check that no processes are using the device.
  */
-void
+int
 unregister_framebuffer(struct fb_info *fb_info)
 {
 	mutex_lock(&registration_lock);
 	do_unregister_framebuffer(fb_info);
 	mutex_unlock(&registration_lock);
+	return 0;
 }
 EXPORT_SYMBOL(unregister_framebuffer);
 

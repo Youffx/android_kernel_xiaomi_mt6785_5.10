@@ -524,7 +524,7 @@ struct wakeup_source *dip_wake_lock;
 struct wakeup_source *isp_mdp_wake_lock;
 #else
 struct wake_lock dip_wake_lock;
-struct wakeup_source isp_mdp_wake_lock;
+struct wake_lock isp_mdp_wake_lock;
 #endif
 static int g_bWaitLock;
 static unsigned int g_dip1sterr = DIP_GCE_EVENT_NONE;

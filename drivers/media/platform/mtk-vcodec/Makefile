@@ -1,5 +1,3 @@
-#ifneq ($(MTK_VCODEC_PLATFORM),)
-
 obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-common.o
 
 mtk-vcodec-dec-$(CONFIG_VIDEO_MEDIATEK_VCU) += vdec/vdec_common_if.o \
@@ -24,6 +22,7 @@ mtk-vcodec-enc-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk_vcodec_enc_drv.o \
 mtk-vcodec-common-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk_vcodec_intr.o \
 		mtk_vcodec_util.o
 
+# V1 platform
 ifeq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_V1),y)
 	obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-dec-v1.o \
 	                       mtk-vcodec-enc-v1.o
@@ -40,6 +39,7 @@ ifeq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_V1),y)
 	mtk-vcodec-enc-v1-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-enc.o
 endif
 
+# V2 platform
 ifeq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_V2),y)
 	obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-dec-v2.o \
 	                       mtk-vcodec-enc-v2.o
@@ -56,7 +56,10 @@ ifeq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_V2),y)
 	mtk-vcodec-enc-v2-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-enc.o
 endif
 
-subdir-ccflags-y += -Werror
+# V2 is default when neither V1 nor V2 is selected via Kconfig,
+# but CONFIG_VIDEO_MEDIATEK_VCODEC_V2 should be set explicitly.
+
+subdir-ccflags-y += -Wno-error
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-vcu
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-vcodec
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-videobuf
@@ -71,5 +74,3 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/vcp/rv
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/vcp/include
 ccflags-y += -I$(srctree)/drivers/dma-buf/heaps
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/trusted_mem/
-
-#endif

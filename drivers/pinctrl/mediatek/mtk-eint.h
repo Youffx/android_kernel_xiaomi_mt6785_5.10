@@ -14,6 +14,13 @@
 #define MAX_PIN 256
 //#define MTK_EINT_DEBUG
 
+struct mtk_eint_hw {
+	u8		port_mask;
+	u8		ports;
+	unsigned int	ap_num;
+	unsigned int	db_cnt;
+};
+
 struct mtk_eint_regs {
 	unsigned int	stat;
 	unsigned int	ack;

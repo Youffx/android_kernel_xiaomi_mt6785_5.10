@@ -1356,7 +1356,7 @@ struct ccci_tag_bootmode {
 	u32 boottype;
 };
 
-unsigned int get_boot_mode_from_dts(void)
+__weak unsigned int get_boot_mode_from_dts(void)
 {
 	struct device_node *np_chosen = NULL;
 	struct ccci_tag_bootmode *tag = NULL;

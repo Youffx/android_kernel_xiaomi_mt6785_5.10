@@ -54,6 +54,7 @@
 #include "mtk_disp_c3d.h"
 #include "mtk_disp_chist.h"
 #include "platform/mtk_drm_6789.h"
+#include "platform/mtk_drm_6785.h"
 
 #include "mtk_drm_mmp.h"
 /* *******Panel Master******** */
@@ -999,7 +1000,7 @@ static bool mtk_atomic_skip_plane_update(struct mtk_drm_private *private,
 #endif
 }
 
-bool mtk_drm_lcm_is_connect(void)
+__weak bool mtk_drm_lcm_is_connect(void)
 {
 	struct device_node *chosen_node;
 
@@ -3311,6 +3312,8 @@ static const struct mtk_mmsys_driver_data mt6855_mmsys_driver_data = {
 	.bypass_infra_ddr_control = true,
 };
 
+
+
 #ifdef MTK_DRM_FENCE_SUPPORT
 void mtk_drm_suspend_release_present_fence(struct device *dev,
 					   unsigned int index)
@@ -4186,7 +4189,7 @@ int mtk_drm_disp_test_show(struct drm_crtc *crtc, bool enable)
 }
 #endif
 
-int _parse_tag_videolfb(unsigned int *vramsize, phys_addr_t *fb_base,
+__weak int _parse_tag_videolfb(unsigned int *vramsize, phys_addr_t *fb_base,
 			unsigned int *fps)
 {
 #ifndef CONFIG_MTK_DISP_NO_LK
@@ -4348,7 +4351,7 @@ void mtk_drm_mmlsys_submit_done_cb(void *cb_param)
 		return;
 	}
 
-	DDPINFO("%s cb_para:0x%x, 0x%x, 0x%x\n", __func__,
+	DDPINFO("%s cb_para:%p, %p, %p\n", __func__,
 		cb_para, &(cb_para->mml_job_submit_done), &(cb_para->mml_job_submit_wq));
 	atomic_set(&(cb_para->mml_job_submit_done), 1);
 	DDPINFO("%s 2\n", __func__);
@@ -4360,7 +4363,7 @@ void mtk_drm_wait_mml_submit_done(struct mtk_mml_cb_para *cb_para)
 {
 	int ret = 0;
 
-	DDPINFO("%s 1 0x%x 0x%x, 0x%x\n", __func__,
+	DDPINFO("%s 1 %p %p, %p\n", __func__,
 		cb_para,
 		&(cb_para->mml_job_submit_wq),
 		&(cb_para->mml_job_submit_done));
@@ -4966,6 +4969,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_OVL},
 	{.compatible = "mediatek,mt6789-disp-ovl",
 	 .data = (void *)MTK_DISP_OVL},
+	{.compatible = "mediatek,mt6785-disp-ovl",
+	 .data = (void *)MTK_DISP_OVL},
 	{.compatible = "mediatek,mt6879-disp-ovl",
 	 .data = (void *)MTK_DISP_OVL},
 	{.compatible = "mediatek,mt6855-disp-ovl",
@@ -4989,6 +4994,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	{.compatible = "mediatek,mt6833-disp-rdma",
 	 .data = (void *)MTK_DISP_RDMA},
 	{.compatible = "mediatek,mt6789-disp-rdma",
+	 .data = (void *)MTK_DISP_RDMA},
+	{.compatible = "mediatek,mt6785-disp-rdma",
 	 .data = (void *)MTK_DISP_RDMA},
 	{.compatible = "mediatek,mt6879-disp-rdma",
 	 .data = (void *)MTK_DISP_RDMA},
@@ -5016,6 +5023,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_WDMA},
 	{.compatible = "mediatek,mt6789-disp-wdma",
 	 .data = (void *)MTK_DISP_WDMA},
+	{.compatible = "mediatek,mt6785-disp-wdma",
+	 .data = (void *)MTK_DISP_WDMA},
 	{.compatible = "mediatek,mt6879-disp-wdma",
 	 .data = (void *)MTK_DISP_WDMA},
 	{.compatible = "mediatek,mt6855-disp-wdma",
@@ -5033,6 +5042,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	{.compatible = "mediatek,mt6895-disp-ccorr",
 	 .data = (void *)MTK_DISP_CCORR},
 	{.compatible = "mediatek,mt6789-disp-ccorr",
+	 .data = (void *)MTK_DISP_CCORR},
+	{.compatible = "mediatek,mt6785-disp-ccorr",
 	 .data = (void *)MTK_DISP_CCORR},
 	{.compatible = "mediatek,mt6879-disp-ccorr",
 	 .data = (void *)MTK_DISP_CCORR},
@@ -5078,6 +5089,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_COLOR},
 	{.compatible = "mediatek,mt6789-disp-color",
 	 .data = (void *)MTK_DISP_COLOR},
+	{.compatible = "mediatek,mt6785-disp-color",
+	 .data = (void *)MTK_DISP_COLOR},
 	{.compatible = "mediatek,mt6879-disp-color",
 	 .data = (void *)MTK_DISP_COLOR},
 	{.compatible = "mediatek,mt6855-disp-color",
@@ -5106,6 +5119,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_AAL},
 	{.compatible = "mediatek,mt6789-disp-aal",
 	 .data = (void *)MTK_DISP_AAL},
+	{.compatible = "mediatek,mt6785-disp-aal",
+	 .data = (void *)MTK_DISP_AAL},
 	{.compatible = "mediatek,mt6879-disp-aal",
 	 .data = (void *)MTK_DISP_AAL},
 	{.compatible = "mediatek,mt6855-disp-aal",
@@ -5128,6 +5143,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_GAMMA},
 	{.compatible = "mediatek,mt6789-disp-gamma",
 	 .data = (void *)MTK_DISP_GAMMA},
+	{.compatible = "mediatek,mt6785-disp-gamma",
+	 .data = (void *)MTK_DISP_GAMMA},
 	{.compatible = "mediatek,mt6879-disp-gamma",
 	 .data = (void *)MTK_DISP_GAMMA},
 	{.compatible = "mediatek,mt6855-disp-gamma",
@@ -5141,6 +5158,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	{.compatible = "mediatek,mt6895-disp-dither",
 	 .data = (void *)MTK_DISP_DITHER},
 	{.compatible = "mediatek,mt6789-disp-dither",
+	 .data = (void *)MTK_DISP_DITHER},
+	{.compatible = "mediatek,mt6785-disp-dither",
 	 .data = (void *)MTK_DISP_DITHER},
 	{.compatible = "mediatek,mt6879-disp-dither",
 	 .data = (void *)MTK_DISP_DITHER},
@@ -5180,6 +5199,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DSI},
 	{.compatible = "mediatek,mt6789-dsi",
 	 .data = (void *)MTK_DSI},
+	{.compatible = "mediatek,mt6785-dsi",
+	 .data = (void *)MTK_DSI},
 	{.compatible = "mediatek,mt6879-dsi",
 	 .data = (void *)MTK_DSI},
 	{.compatible = "mediatek,mt6855-dsi",
@@ -5212,6 +5233,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_MUTEX},
 	{.compatible = "mediatek,mt6789-disp-mutex",
 	 .data = (void *)MTK_DISP_MUTEX},
+	{.compatible = "mediatek,mt6785-disp-mutex",
+	 .data = (void *)MTK_DISP_MUTEX},
 	{.compatible = "mediatek,mt6879-disp-mutex",
 	 .data = (void *)MTK_DISP_MUTEX},
 	{.compatible = "mediatek,mt6855-disp-mutex",
@@ -5236,6 +5259,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_PWM},
 	{.compatible = "mediatek,mt6789-disp-pwm",
 	 .data = (void *)MTK_DISP_PWM},
+	{.compatible = "mediatek,mt6785-disp-pwm",
+	 .data = (void *)MTK_DISP_PWM},
 	{.compatible = "mediatek,mt6879-disp-pwm",
 	 .data = (void *)MTK_DISP_PWM},
 	{.compatible = "mediatek,mt6855-disp-pwm",
@@ -5254,6 +5279,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	 .data = (void *)MTK_DISP_RSZ},
 	{.compatible = "mediatek,mt6789-disp-rsz",
 	 .data = (void *)MTK_DISP_RSZ},
+	{.compatible = "mediatek,mt6785-disp-rsz",
+	 .data = (void *)MTK_DISP_RSZ},
 	{.compatible = "mediatek,mt6879-disp-rsz",
 	 .data = (void *)MTK_DISP_RSZ},
 	{.compatible = "mediatek,mt6855-disp-rsz",
@@ -5271,6 +5298,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
 	{.compatible = "mediatek,mt6895-disp-postmask",
 	 .data = (void *)MTK_DISP_POSTMASK},
 	{.compatible = "mediatek,mt6789-disp-postmask",
+	 .data = (void *)MTK_DISP_POSTMASK},
+	{.compatible = "mediatek,mt6785-disp-postmask",
 	 .data = (void *)MTK_DISP_POSTMASK},
 	{.compatible = "mediatek,mt6879-disp-postmask",
 	 .data = (void *)MTK_DISP_POSTMASK},
@@ -5448,7 +5477,6 @@ static int mtk_drm_get_segment_id(struct platform_device *pdev,
 	kfree(efuse_buf);
 #endif
 
-done:
 	DDPINFO("%s, segment_id: %d", __func__, segment_id);
 
 	private->seg_id = segment_id;
@@ -5514,7 +5542,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
 				"dispsys_num", &dispsys_num);
 	if (ret) {
 		dev_err(dev,
-			"no dispsys_config dispsys_num\n", ret);
+			"no dispsys_config dispsys_num: %d\n", ret);
 		dispsys_num = 1;
 	}
 
@@ -5585,9 +5613,9 @@ SKIP_SIDE_DISP:
 			if (IS_ERR(private->infra_regs))
 				DDPPR_ERR("%s: infra_ao_base of_iomap failed\n", __func__);
 			else
-				DDPMSG("%s, infra_regs:0x%p, infra_regs_pa:0x%lx\n",
-					__func__, (void *)private->infra_regs,
-					private->infra_regs_pa);
+			DDPMSG("%s, infra_regs:%p, infra_regs_pa:0x%llx\n",
+				__func__, (void *)private->infra_regs,
+				private->infra_regs_pa);
 		}
 		of_node_put(infra_node);
 	}
@@ -5790,7 +5818,7 @@ static int mtk_drm_sys_suspend(struct device *dev)
 	if (wake_state == false)
 		goto OUT;
 
-	DDPMSG("%s\n");
+	DDPMSG("%s\n", __func__);
 	drm_kms_helper_poll_disable(drm);
 
 	private->suspend_state = drm_atomic_helper_suspend(drm);
@@ -5843,6 +5871,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
 	 .data = &mt6779_mmsys_driver_data},
 	{.compatible = "mediatek,mt6789-disp",
 	 .data = &mt6789_mmsys_driver_data},
+	{.compatible = "mediatek,mt6785-mmsys",
+	 .data = &mt6785_mmsys_driver_data},
 	{.compatible = "mediatek,mt8173-mmsys",
 	 .data = &mt8173_mmsys_driver_data},
 	{.compatible = "mediatek,mt6885-mmsys",

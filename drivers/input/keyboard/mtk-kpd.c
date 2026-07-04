@@ -140,38 +140,38 @@ static int kpd_get_dts_info(struct mtk_keypad *keypad,
 {
 	int ret;
 
-	ret = of_property_read_u32(node, "mediatek,key-debounce-ms",
+	ret = of_property_read_u32(node, "mediatek,kpd-key-debounce",
 		&keypad->key_debounce);
 	if (ret) {
-		pr_err("read mediatek,key-debounce-ms error.\n");
+		pr_err("read mediatek,kpd-key-debounce error.\n");
 		return ret;
 	}
 
-	ret = of_property_read_u32(node, "mediatek, use-extend-type",
+	ret = of_property_read_u32(node, "mediatek,kpd-use-extend-type",
 		&keypad->use_extend_type);
 	if (ret) {
-		pr_err("read mediatek,use-extend-type error.\n");
+		pr_err("read mediatek,kpd-use-extend-type error.\n");
 		keypad->use_extend_type = 0;
 	}
 
-	ret = of_property_read_u32(node, "mediatek,hw-map-num",
+	ret = of_property_read_u32(node, "mediatek,kpd-hw-map-num",
 		&keypad->hw_map_num);
 	if (ret) {
-		pr_err("read mediatek,hw-map-num error.\n");
+		pr_err("read mediatek,kpd-hw-map-num error.\n");
 		return ret;
 	}
 
 	if (keypad->hw_map_num > KPD_NUM_KEYS) {
-		pr_err("hw-map-num error, it cannot bigger than %d.\n",
+		pr_err("kpd-hw-map-num error, it cannot bigger than %d.\n",
 			KPD_NUM_KEYS);
 		return -EINVAL;
 	}
 
-	ret = of_property_read_u32_array(node, "mediatek,hw-init-map",
+	ret = of_property_read_u32_array(node, "mediatek,kpd-hw-init-map",
 		keypad->hw_init_map, keypad->hw_map_num);
 
 	if (ret) {
-		pr_err("hw-init-map was not defined in dts.\n");
+		pr_err("kpd-hw-init-map was not defined in dts.\n");
 		return ret;
 	}
 

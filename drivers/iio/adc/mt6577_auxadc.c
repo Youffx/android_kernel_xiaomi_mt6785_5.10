@@ -20,6 +20,7 @@
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 #include <linux/nvmem-consumer.h>
+extern u32 get_devinfo_with_index(u32 index);
 
 /* Register definitions */
 #define MT6577_AUXADC_CON0                    0x00

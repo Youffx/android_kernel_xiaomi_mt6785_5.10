@@ -8,20 +8,21 @@ DRAM frequency to fulfill those requests.
 Required Properties:
 - compatible: Should be one of the following
 	- "mediatek,mt8183-dvfsrc": For MT8183 SoC
+	- "mediatek,mt6785-dvfsrc": For MT6785 SoC
+	- "mediatek,mt6873-dvfsrc": For MT6873 SoC
+	- "mediatek,mt6885-dvfsrc": For MT6885 SoC
+	- "mediatek,mt6893-dvfsrc": For MT6893 SoC
+	- "mediatek,mt6853-dvfsrc": For MT6853 SoC
+	- "mediatek,mt6833-dvfsrc": For MT6833 SoC
+	- "mediatek,mt6877-dvfsrc": For MT6877 SoC
+	- "mediatek,mt6983-dvfsrc": For MT6983 SoC
+	- "mediatek,mt6879-dvfsrc": For MT6879 SoC
+	- "mediatek,mt6855-dvfsrc": For MT6855 SoC
+	- "mediatek,mt6895-dvfsrc": For MT6895 SoC
+	- "mediatek,mt6789-dvfsrc": For MT6789 SoC
 - reg: Address range of the DVFSRC unit
-- clock-names: Must include the following entries:
-	"dvfsrc": DVFSRC module clock
-- clocks: Must contain an entry for each entry in clock-names.
+- reg-names: Required name for the reg resource ("dvfsrc")
 - #interconnect-cells : should contain 1
-- interconnect : interconnect providers support dram bandwidth requirements.
-	The provider is able to communicate with the DVFSRC and send the dram
-	bandwidth to it. shall contain only one of the following:
-	"mediatek,mt8183-emi"
-- regulator : The DVFSRC regulator is modelled as a subdevice of the DVFSRC.
-	Because DVFSRC can request power directly via register read/write, likes
-	vcore which is a core power of mt8183. As such, the DVFSRC regulator
-	requires that DVFSRC nodes be present. shall contain only one of the
-	following: "mediatek,mt8183-dvfsrc-regulator"
 
 Example:
 

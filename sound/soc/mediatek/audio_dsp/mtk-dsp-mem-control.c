@@ -743,7 +743,7 @@ int init_mtk_adsp_dram_segment(void)
 		ret = gen_pool_add_virt(dsp_dram_pool[i],
 					dram->va_addr, dram->phy_addr, dram->size, -1);
 
-		pr_info("%s ret(%d) add chunk va/sz=(0x%lx, %zu), pool total(%zu)\n",
+		pr_info("%s ret(%d) add chunk va/sz=(0x%llx, %llu), pool total(%zu)\n",
 			__func__, ret, dram->va_addr, dram->size,
 			gen_pool_size(dsp_dram_pool[i]));
 

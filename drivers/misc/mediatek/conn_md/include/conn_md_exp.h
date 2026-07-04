@@ -20,6 +20,8 @@
 #ifndef KERNEL_5_4_NOT_FINISH_PORTING
 #define    MD_MOD_EL1    5
 
+#if !defined(__PORT_IPC_H__) && !defined(LOCAL_PARA_DEFINED)
+#define LOCAL_PARA_DEFINED
 struct local_para {
 	unsigned char ref_count;
 	unsigned char _stub; /* MD complier will align ref_count to 16bit */
@@ -45,6 +47,8 @@ struct ipc_ilm {
 	struct peer_buff *peer_buff_ptr;
 }; /* for conn_md */
 #endif
+
+#endif /* KERNEL_5_4_NOT_FINISH_PORTING */
 
 /*
  * Provide a common conn_md_ipc_ilm_t definition for wmt_drv.ko to reference,

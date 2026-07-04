@@ -2553,7 +2553,7 @@ s32 cmdq_mbox_disable(void *chan)
 
 	mbox_usage = atomic_dec_return(&cmdq->thread[i].usage);
 	if (mbox_usage < 0)
-		cmdq_util_aee("CMDQ", "hwid:%hu idx:%d usage:d",
+		cmdq_util_aee("CMDQ", "hwid:%hu idx:%d usage:%d",
 			cmdq->hwid, i, mbox_usage);
 	cmdq_clk_disable(cmdq);
 

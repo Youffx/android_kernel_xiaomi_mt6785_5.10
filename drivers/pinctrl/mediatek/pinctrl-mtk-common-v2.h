@@ -220,6 +220,8 @@ struct mtk_pin_soc {
 	u8				gpio_m;
 	bool				ies_present;
 	u32				capability_flags;
+	const struct mtk_eint_regs	*eint_regs;
+	const struct mtk_eint_hw	*eint_hw;
 	const char * const		*base_names;
 	unsigned int			nbase_names;
 	const unsigned int		*pull_type;

@@ -16,21 +16,20 @@
 #include "mtk_vcodec_util.h"
 #include "mtk_vcu.h"
 
-#if DEC_DVFS
 #include <linux/pm_opp.h>
 #include <linux/regulator/consumer.h>
+#if DEC_DVFS
 #include "vcodec_dvfs.h"
 #define STD_VDEC_FREQ 218000000
 #endif
 
-#if DEC_EMI_BW
 //#include <linux/interconnect-provider.h>
 #include "mtk-interconnect.h"
 #include "vcodec_bw.h"
-#endif
 
 //#define VDEC_PRINT_DTS_INFO
 
+#if DEC_DVFS
 static bool mtk_dec_tput_init(struct mtk_vcodec_dev *dev)
 {
 	const int op_item_num = 9;
@@ -275,6 +274,7 @@ static void mtk_dec_tput_deinit(struct mtk_vcodec_dev *dev)
 		dev->vdec_port_bw = 0;
 	}
 }
+#endif
 
 
 void mtk_prepare_vdec_dvfs(struct mtk_vcodec_dev *dev)

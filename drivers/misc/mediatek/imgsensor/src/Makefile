@@ -6,7 +6,7 @@ subdir-ccflags-y += -I$(srctree)/drivers/i2c/busses/ \
 
 MTK_DRIVER_PATH  := $(srctree)/drivers/misc/mediatek
 
-MTK_PLATFORM := isp6s
+MTK_PLATFORM := mt6785
 
 subdir-ccflags-y += \
              -I$(MTK_DRIVER_PATH)/imgsensor/inc \

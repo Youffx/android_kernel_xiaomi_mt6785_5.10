@@ -22,6 +22,7 @@ endif
 ifneq ($(CCCI_OBJ), n)
 
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/inc/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/platform
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/ccmni/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/conn_md/include/

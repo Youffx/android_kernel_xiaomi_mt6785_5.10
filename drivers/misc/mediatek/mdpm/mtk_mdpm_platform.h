@@ -272,9 +272,9 @@ extern void mt_mdpm_init(void);
 extern void init_md1_section_level(u32 *share_mem);
 extern void init_version_check(u32 *share_mem);
 extern unsigned int get_md1_status_reg(void);
-extern unsigned int get_md1_scenario(u32 share_reg,
+extern enum md_scenario get_md1_scenario(u32 share_reg,
 	enum mdpm_power_type power_type);
-extern int get_md1_scenario_power(unsigned int scenario,
+extern int get_md1_scenario_power(enum md_scenario scenario,
 	enum mdpm_power_type power_type, struct md_power_status *mdpm_pwr_sta);
 extern int get_md1_tx_power(enum md_scenario scenario, u32 *share_mem,
 	enum mdpm_power_type power_type, struct md_power_status *mdpm_pwr_sta);

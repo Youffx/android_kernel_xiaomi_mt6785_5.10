@@ -2508,13 +2508,13 @@ static int scp_device_probe(struct platform_device *pdev)
 		scp_mbox_info[i].mbdev = &scp_mboxdev;
 		ret = mtk_mbox_probe(pdev, scp_mbox_info[i].mbdev, i);
 		if (ret < 0 || scp_mboxdev.info_table[i].irq_num < 0) {
-			pr_notice("[SCP] mbox%d probe fail\n", i, ret);
+			pr_notice("[SCP] mbox%d probe fail (%d)\n", i, ret);
 			continue;
 		}
 
 		ret = enable_irq_wake(scp_mboxdev.info_table[i].irq_num);
 		if (ret < 0) {
-			pr_notice("[SCP]mbox%d enable irq fail\n", i, ret);
+			pr_notice("[SCP]mbox%d enable irq fail (%d)\n", i, ret);
 			continue;
 		}
 		mbox_setup_pin_table(i);

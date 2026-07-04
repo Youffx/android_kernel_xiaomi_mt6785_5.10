@@ -17,6 +17,7 @@ ccflags-y += -I$(srctree)/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/mt6873
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/inc/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/eccci/platform/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/mt6873
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/include
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/pmic/

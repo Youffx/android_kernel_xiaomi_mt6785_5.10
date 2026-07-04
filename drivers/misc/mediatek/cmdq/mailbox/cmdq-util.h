@@ -78,7 +78,7 @@ enum {
 		int len = snprintf(tag, LINK_MAX, "CRDISPATCH_KEY:%s", key); \
 		if (len >= LINK_MAX) \
 			pr_debug("len:%d over max:%d\n", \
-				__func__, __LINE__, len, LINK_MAX); \
+				len, LINK_MAX); \
 		cmdq_aee(fmt, ##args); \
 		cmdq_util_error_save("[cmdq][aee] "fmt"\n", ##args); \
 		aee_kernel_warning_api(__FILE__, __LINE__, \
@@ -90,7 +90,7 @@ enum {
 		char tag[LINK_MAX]; \
 		int len = snprintf(tag, LINK_MAX, "CRDISPATCH_KEY:%s", key); \
 		if (len >= LINK_MAX) \
-			pr_debug("len:%d over max:%d\n", \
+			pr_debug("%s:%d len:%d over max:%d\n", \
 				__func__, __LINE__, len, LINK_MAX); \
 		cmdq_aee(fmt" (aee not ready)", ##args); \
 		cmdq_util_error_save("[cmdq][aee] "fmt"\n", ##args); \
@@ -105,7 +105,7 @@ enum {
 		int len = snprintf(tag, LINK_MAX, "CRDISPATCH_KEY:%s", key); \
 		if (len >= LINK_MAX) \
 			pr_debug("len:%d over max:%d\n", \
-				__func__, __LINE__, len, LINK_MAX); \
+				len, LINK_MAX); \
 		cmdq_aee(fmt, ##args); \
 		cmdq_util_error_save("[cmdq][aee] "fmt"\n", ##args); \
 		if (aee == CMDQ_AEE_WARN) \
@@ -124,7 +124,7 @@ enum {
 		int len = snprintf(tag, LINK_MAX, "CRDISPATCH_KEY:%s", key); \
 		if (len >= LINK_MAX) \
 			pr_debug("len:%d over max:%d\n", \
-				__func__, __LINE__, len, LINK_MAX); \
+				len, LINK_MAX); \
 		cmdq_aee(fmt" (aee not ready)", ##args); \
 		cmdq_util_error_save("[cmdq][aee] "fmt"\n", ##args); \
 	} while (0)

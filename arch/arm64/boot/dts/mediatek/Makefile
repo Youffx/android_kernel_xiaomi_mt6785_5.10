@@ -13,4 +13,11 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana-rev7.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-evb.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-evb.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
+dtb-$(CONFIG_ARCH_MEDIATEK) += mt6785.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
+dtb-$(CONFIG_ARCH_MEDIATEK) += rosemary.dtb
+
+# DTB overlay support for appended DTB image
+DTC_FLAGS_mt6785 := -@
+DTC_FLAGS_rosemary := -@
+DTC_FLAGS += -@

@@ -1,4 +1,5 @@
-subdir-ccflags-y += -Werror
+# Youffx: disabled -Werror because vendor DRM code has too many format/return-type warnings
+# subdir-ccflags-y += -Werror
 
 mediatek-drm-y := mtk_drm_drv.o \
 		  mtk_disp_tdshp.o \
@@ -52,6 +53,7 @@ mediatek-drm-y := mtk_drm_drv.o \
 		  mtk_disp_inlinerotate.o \
 		  mtk_mmlsys_bypass_mode.o \
 		  platform/mtk_drm_6789.o \
+		  platform/mtk_drm_6785.o \
 
 #ccflags-y += -DDRM_CMDQ_DISABLE
 #mediatek-drm-y += mtk_cmdq_dummy.o

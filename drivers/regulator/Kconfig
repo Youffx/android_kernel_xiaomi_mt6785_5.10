@@ -1427,5 +1427,13 @@ config REGULATOR_MT6895_ALPHA_SUPPORT
 	  Set Y or M to select this feature for specific platform-mt6895,
 	  and set N to disable.
 
+config REGULATOR_WL2866D
+	bool "ON Semi Technologies Inc. wl2866d regulator driver"
+	depends on I2C
+	help
+	  Say Y here to support the wl2866d chip.
+	  This driver controls wl2866d chip and the voltage
+	  regulators found in ON Semi Technologies Inc.
+
 endif
 

@@ -115,6 +115,15 @@ obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
 obj-$(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API) +=tui-common.o
 TOUCH_LISTS := $(subst ",,$(CONFIG_TOUCHSCREEN_MTK_TOUCH))
 obj-y += $(foreach TOUCH,$(TOUCH_LISTS),$(TOUCH)/)
+obj-$(CONFIG_TOUCHSCREEN_GOODIX_GTX8) += goodix_gtx8/
+obj-$(CONFIG_TOUCHSCREEN_XIAOMI_TOUCHFEATURE) += xiaomi/
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += tp_common.o
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += lct_tp_work.o
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += lct_tp_palm.o
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += lct_tp_gesture.o
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += lct_tp_grip_area.o
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += lct_tp_info.o
+obj-$(CONFIG_TOUCHSCREEN_COMMON) += lct_tp_selftest.o
 
 ifneq ($(wildcard $(srctree)/$(src)/k6983v1_64_alpha),)
 obj-$(CONFIG_TOUCHSCREEN_MT6983_ALPHA_SUPPORT) += k6983v1_64_alpha/
@@ -123,3 +132,5 @@ endif
 ifneq ($(wildcard $(srctree)/$(src)/k6895v1_64_95t_alpha),)
 obj-$(CONFIG_TOUCHSCREEN_MT6895_ALPHA_SUPPORT) += k6895v1_64_95t_alpha/
 endif
+
+subdir-ccflags-y += -Wno-error=incompatible-pointer-types -Wno-error=unused-function

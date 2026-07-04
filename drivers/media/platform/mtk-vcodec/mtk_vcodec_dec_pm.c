@@ -561,6 +561,7 @@ void mtk_vcodec_dec_clock_off(struct mtk_vcodec_pm *pm, int hw_id)
 #endif
 }
 
+#if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
 static void mtk_vdec_dump_addr_reg(
 	struct mtk_vcodec_dev *dev, int hw_id, enum mtk_dec_dump_addr_type type)
 {
@@ -766,6 +767,7 @@ static void mtk_vdec_dump_addr_reg(
 
 	spin_unlock_irqrestore(&dev->dec_power_lock[hw_id], flags);
 }
+#endif
 
 #if IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
 static int mtk_vdec_translation_fault_callback(

@@ -29,8 +29,6 @@ static void ccci_aed_v2(struct ccci_fsm_ee *mdee, unsigned int dump_flag,
 {
 	void *ex_log_addr = NULL;
 	int ex_log_len = 0;
-	void *md_img_addr = NULL;
-	int md_img_len = 0;
 	int info_str_len = 0;
 	char *buff;		/*[AED_STR_LEN]; */
 #if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
@@ -84,6 +82,8 @@ static void ccci_aed_v2(struct ccci_fsm_ee *mdee, unsigned int dump_flag,
 	}
 	if (buff == NULL) {
 #if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
+		void *md_img_addr = NULL;
+		int md_img_len = 0;
 		if (md_dbg_dump_flag & (1U << MD_DBG_DUMP_SMEM))
 			aed_md_exception_api(ex_log_addr, ex_log_len,
 				md_img_addr, md_img_len, buf_fail, db_opt);
@@ -93,6 +93,8 @@ static void ccci_aed_v2(struct ccci_fsm_ee *mdee, unsigned int dump_flag,
 #endif
 	} else {
 #if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
+		void *md_img_addr = NULL;
+		int md_img_len = 0;
 		if (md_dbg_dump_flag & (1 << MD_DBG_DUMP_SMEM))
 			aed_md_exception_api(ex_log_addr, ex_log_len,
 				md_img_addr, md_img_len, buff, db_opt);

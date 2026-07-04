@@ -1,0 +1,13 @@
+config TOUCHSCREEN_XIAOMI_TOUCHFEATURE
+	bool "Xiaomi touch feature"
+	default n
+	help
+	  Say Y here if you want Xiaomi touch feature.
+
+if TOUCHSCREEN_XIAOMI_TOUCHFEATURE
+
+config TOUCHSCREEN_XIAOMI_TOUCHFEATURE_DIRECTORY
+	string "Xiaomi touch directory name"
+	default "xiaomi"
+
+endif

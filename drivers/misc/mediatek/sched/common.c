@@ -13,7 +13,7 @@ MODULE_LICENSE("GPL");
  *
  * Return: 1 if the CPU is currently idle. 0 otherwise.
  */
-int idle_cpu(int cpu)
+__weak int idle_cpu(int cpu)
 {
 	struct rq *rq = cpu_rq(cpu);
 

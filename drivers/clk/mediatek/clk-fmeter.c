@@ -21,7 +21,7 @@ const struct fmeter_clk *mt_get_fmeter_clks(void)
 }
 EXPORT_SYMBOL(mt_get_fmeter_clks);
 
-unsigned int mt_get_ckgen_freq(unsigned int id)
+unsigned int __weak mt_get_ckgen_freq(unsigned int id)
 {
 	if (fm_ops == NULL || fm_ops->get_ckgen_freq == NULL)
 		return 0;
@@ -30,7 +30,7 @@ unsigned int mt_get_ckgen_freq(unsigned int id)
 }
 EXPORT_SYMBOL(mt_get_ckgen_freq);
 
-unsigned int mt_get_abist_freq(unsigned int id)
+unsigned int __weak mt_get_abist_freq(unsigned int id)
 {
 	if (fm_ops == NULL || fm_ops->get_abist_freq == NULL)
 		return 0;

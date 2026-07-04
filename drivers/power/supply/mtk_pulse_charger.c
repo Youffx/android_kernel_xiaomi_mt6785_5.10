@@ -333,7 +333,7 @@ static int mtk_linear_chr_topoff(struct mtk_charger *info)
 {
 	ktime_t ktime_now, ktime_diff;
 	struct pcharger_data *algo_data = info->algo.algo_data;
-	struct timespec64 charging_time, topoff_time;
+	struct timespec64 charging_time;
 
 
 	pr_notice("%s time:%d %d %d %d\n", __func__,
@@ -349,7 +349,7 @@ static int mtk_linear_chr_topoff(struct mtk_charger *info)
 	charging_time = ktime_to_timespec64(ktime_diff);
 
 	algo_data->cc_charging_time = 0;
-	algo_data->topoff_charging_time = topoff_time.tv_sec;
+	algo_data->topoff_charging_time = charging_time.tv_sec;
 	algo_data->total_charging_time = charging_time.tv_sec;
 
 	linear_chg_turn_on_charging(info);

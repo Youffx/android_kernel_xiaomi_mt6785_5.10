@@ -366,6 +366,12 @@ static void adsp_slb_init_handler(int id, void *data, unsigned int len)
 		pr_info("%s, fail send msg to cid %d, ret %d", __func__, cid, ret);
 }
 
+/* Youffx: IPC IRQ handler for DRAM-based IPI (MT6785) */
+static void adsp_ipc_handler(int irq, void *data, unsigned int cid)
+{
+	adsp_mbox_ipc_handler(cid);
+}
+
 int adsp_core_common_init(struct adsp_priv *pdata)
 {
 	int ret = 0;
@@ -379,6 +385,12 @@ int adsp_core_common_init(struct adsp_priv *pdata)
 
 	/* wdt irq */
 	adsp_irq_registration(pdata->id, ADSP_IRQ_WDT_ID, adsp_wdt_handler, pdata);
+
+	/* Youffx: IPC irq for DRAM-based IPI (MT6785) */
+	if (!pdata->irq[ADSP_IRQ_IPC_ID].irq_cb &&
+	    pdata->irq[ADSP_IRQ_IPC_ID].seq > 0)
+		adsp_irq_registration(pdata->id, ADSP_IRQ_IPC_ID,
+				      adsp_ipc_handler, pdata);
 
 	/* mailbox */
 	pdata->recv_mbox->prdata = &pdata->id;

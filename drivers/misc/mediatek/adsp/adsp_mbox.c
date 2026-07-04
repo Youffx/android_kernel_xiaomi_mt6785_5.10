@@ -8,7 +8,9 @@
 #include <linux/sched/clock.h>
 #include "adsp_core.h"
 #include "adsp_platform.h"
+#include "adsp_reg.h"
 #include "adsp_mbox.h"
+#include "adsp_reserved_mem.h"
 
 static int (*ipi_queue_recv_msg_hanlder)(
 	uint32_t core_id, /* enum adsp_core_id */
@@ -22,7 +24,26 @@ struct adsp_ipi_desc {
 	const char *name;
 } adsp_ipi_descs[ADSP_NR_IPI];
 
-static int adsp_mbox_pin_cb(unsigned int id, void *prdata, void *buf,
+/* Youffx: DRAM-based IPI for platforms without dedicated mailbox HW (e.g. MT6785) */
+static void __iomem *mbox_dram_base;
+static size_t mbox_dram_size;
+static bool mbox_dram_mode;
+extern struct mtk_mbox_device adsp_mboxdev;
+
+void adsp_mbox_set_irq_reg(void __iomem *set_reg, void __iomem *clr_reg)
+{
+	int i;
+
+	if (!mbox_dram_mode)
+		return;
+	for (i = 0; i < ADSP_IPI_CH_CNT; i++) {
+		adsp_mboxdev.info_table[i].set_irq_reg = set_reg;
+		adsp_mboxdev.info_table[i].clr_irq_reg = clr_reg;
+	}
+}
+EXPORT_SYMBOL(adsp_mbox_set_irq_reg);
+
+int adsp_mbox_pin_cb(unsigned int id, void *prdata, void *buf,
 			    unsigned int len);
 
 static void adsp_ipi_cb(struct mtk_mbox_pin_recv *pin, void *priv);
@@ -164,7 +185,7 @@ EXIT:
 	return result;
 }
 
-static int adsp_mbox_pin_cb(unsigned int id, void *prdata, void *buf,
+int adsp_mbox_pin_cb(unsigned int id, void *prdata, void *buf,
 			    unsigned int len)
 {
 	u32 core_id = *(u32 *)prdata;
@@ -205,6 +226,39 @@ static int adsp_mbox_pin_cb(unsigned int id, void *prdata, void *buf,
 
 	return ADSP_IPI_DONE;
 }
+EXPORT_SYMBOL(adsp_mbox_pin_cb);
+
+/* Youffx: IPC IRQ handler for DRAM-based IPI (platforms without mailbox HW) */
+void adsp_mbox_ipc_handler(unsigned int cid)
+{
+	struct mtk_mbox_info *minfo = &adsp_mboxdev.info_table[1];
+	struct mtk_ipi_msg_hd *hd;
+	unsigned int slot;
+
+	if (!minfo->enable || !minfo->base)
+		return;
+
+	for (slot = 0; slot < minfo->slot; slot++) {
+		hd = (struct mtk_ipi_msg_hd *)(minfo->base + slot * MBOX_SLOT_SIZE);
+		if (hd->len == 0 || hd->id >= ADSP_NR_IPI)
+			continue;
+		adsp_mbox_pin_cb(hd->id, &cid,
+				 (void *)(hd + 1), hd->len);
+		hd->len = 0;
+	}
+}
+EXPORT_SYMBOL(adsp_mbox_ipc_handler);
+
+/* Youffx: process IPI message from DRAM for platforms without mailbox HW */
+void adsp_mbox_process_msg(u32 core_id, void *msg, u32 len)
+{
+	struct mtk_ipi_msg_hd *hd = (struct mtk_ipi_msg_hd *)msg;
+
+	if (hd->id < ADSP_NR_IPI && adsp_ipi_descs[hd->id].handler)
+		adsp_mbox_pin_cb(hd->id, &core_id,
+				 msg + sizeof(struct mtk_ipi_msg_hd), hd->len);
+}
+EXPORT_SYMBOL(adsp_mbox_process_msg);
 
 static void adsp_ipi_cb(struct mtk_mbox_pin_recv *pin, void *priv)
 {
@@ -238,6 +292,36 @@ int adsp_mbox_probe(struct platform_device *pdev)
 		ret = enable_irq_wake(mbdev->info_table[idx].irq_num);
 		if (ret < 0)
 			break;
+	}
+
+	/* Youffx: if no dedicated mailbox HW, use DRAM-based IPI */
+	if (ret) {
+		void __iomem *base = adsp_get_reserve_mem_virt(ADSP_A_IPI_DMA_MEM_ID);
+		struct mtk_mbox_info *minfo = mbdev->info_table;
+
+		if (base) {
+			mbox_dram_base = base;
+			mbox_dram_size = adsp_get_reserve_mem_size(ADSP_A_IPI_DMA_MEM_ID);
+			mbox_dram_mode = true;
+			/* set up channel 0 (core0 send) with DRAM buffer */
+			minfo[0].base = mbox_dram_base;
+			minfo[0].slot = mbox_dram_size / MBOX_SLOT_SIZE;
+			minfo[0].enable = true;
+			minfo[0].id = 0;
+			minfo[0].opt = MBOX_OPT_QUEUE_DIR;
+			/* channel 1 (core0 recv) same DRAM base */
+			minfo[1].base = mbox_dram_base;
+			minfo[1].slot = mbox_dram_size / MBOX_SLOT_SIZE;
+			minfo[1].enable = true;
+			minfo[1].id = 1;
+			minfo[1].opt = MBOX_OPT_QUEUE_DIR;
+			/* set_irq_reg/clr_irq_reg will be populated by
+			 * adsp_mbox_set_irq_reg() after ADSP_BASE is known
+			 */
+			ret = 0;
+			pr_info("[ADSP] mbox: using DRAM-based IPI (base %p, size %zu)\n",
+				mbox_dram_base, mbox_dram_size);
+		}
 	}
 
 	for (idx = 0; idx < mbdev->send_count; idx++)

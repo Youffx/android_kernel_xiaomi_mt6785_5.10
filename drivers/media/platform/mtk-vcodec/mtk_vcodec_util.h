@@ -270,4 +270,6 @@ int mtk_vcodec_free_mem(struct vcodec_mem_obj *mem, struct device *dev,
 void mtk_vcodec_set_log(struct mtk_vcodec_dev *dev, const char *val,
 	enum mtk_vcodec_log_index log_index);
 
+/* is_disable_map_sec declared in iommu_pseudo.h */
+
 #endif /* _MTK_VCODEC_UTIL_H_ */

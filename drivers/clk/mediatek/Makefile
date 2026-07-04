@@ -41,6 +41,9 @@ obj-$(CONFIG_COMMON_CLK_MT2712_MFGCFG) += clk-mt2712-mfg.o
 obj-$(CONFIG_COMMON_CLK_MT2712_MMSYS) += clk-mt2712-mm.o
 obj-$(CONFIG_COMMON_CLK_MT2712_VDECSYS) += clk-mt2712-vdec.o
 obj-$(CONFIG_COMMON_CLK_MT2712_VENCSYS) += clk-mt2712-venc.o
+ifneq ($(wildcard $(srctree)/$(src)/clk-mt6785.c),)
+obj-$(CONFIG_COMMON_CLK_MT6785) += clk-mt6785.o clk-mt6785-pg.o clk-mtk-v1.o
+endif
 ifneq ($(wildcard $(srctree)/$(src)/clk-mt6789.c),)
 obj-$(CONFIG_COMMON_CLK_MT6789) += clk-mt6789.o clk-bringup.o
 obj-$(CONFIG_COMMON_CLK_MT6789_AUDIOSYS) += clk-mt6789-audiosys.o

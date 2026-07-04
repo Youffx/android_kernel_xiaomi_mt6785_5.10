@@ -124,6 +124,9 @@ mtk_pep40-objs := mtk_pe4.o mtk_pe4_hal.o
 obj-$(CONFIG_MTK_PUMP_EXPRESS_50_SUPPORT) += mtk_pep50.o
 mtk_pep50-objs := mtk_pe5.o mtk_pe5_hal.o
 
+obj-y += ti/
+obj-y += maxim/
+
 ifneq ($(wildcard $(srctree)/$(src)/k6983v1_64_alpha),)
 obj-$(CONFIG_GAUGE_MT6983_ALPHA_SUPPORT) += k6983v1_64_alpha/
 endif
