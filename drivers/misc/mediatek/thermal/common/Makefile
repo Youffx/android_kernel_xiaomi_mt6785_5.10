@@ -19,3 +19,4 @@ ccflags-y  += -I$(srctree)/drivers/gpu/mediatek/gpufreq/include/
 obj-$(CONFIG_MTK_LEGACY_THERMAL) += mtk_thermal_platform.o
 # obj-$(CONFIG_MTK_LEGACY_THERMAL) += ap_thermal_limit.o
 obj-$(CONFIG_MTK_LEGACY_THERMAL) += mtk_thermal_timer.o
+obj-$(CONFIG_MTK_LEGACY_THERMAL) += thermal_zones/
