@@ -6444,6 +6444,25 @@ page_owner=on loop.max_part=7";
 		opp-416000000 { opp-hz = /bits/ 64 <416000000>; opp-microvolt = <750000>; };
 		opp-520000000 { opp-hz = /bits/ 64 <520000000>; opp-microvolt = <800000>; };
 	};
+
+	mtk-static-power {
+		compatible = "mediatek,mtk-static-power";
+		nvmem = <&efuse>;
+		nvmem-names = "mtk_efuse";
+		domain = "LL", "L", "CCI", "GPU", "VCORE", "MODEM", "VPU",
+			 "VSRAM_PROC12", "VSRAM_PROC11", "VSRAM_GPU", "VSRAM_OTHERS";
+		LL           = <136 0x000000ff 950 30 6>;
+		L            = <136 0x0000ff00 950 30 2>;
+		CCI          = <137 0xff000000 950 30 1>;
+		GPU          = <137 0x00ff0000 781 30 1>;
+		VCORE        = <137 0x0000ff00 800 30 1>;
+		MODEM        = <137 0x000000ff 850 30 1>;
+		VPU          = <136 0x00ff0000 800 30 1>;
+		VSRAM_PROC12 = <135 0xff000000 1050 30 1>;
+		VSRAM_PROC11 = <135 0x00ff0000 1050 30 1>;
+		VSRAM_GPU    = <136 0xff000000 881 30 1>;
+		VSRAM_OTHERS = <135 0x0000ff00 900 30 1>;
+	};
 };
 
 #include "mediatek/v1/mt6359.dtsi"
