@@ -60,6 +60,14 @@ config MTK_STATIC_POWER
 	  need it
 	  If unsure, say N.
 
+config MTK_UNIFY_POWER
+	bool "MTK UNIFY POWER"
+	help
+	  This kernel config can be used to enable unified power table.
+	  This table can provide power data and capacity to someone who
+	  need it.
+	  If unsure, say Y.
+
 endmenu # Power
 
 menu "MultiMedia, Display, Camera"
