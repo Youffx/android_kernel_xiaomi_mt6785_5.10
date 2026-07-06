@@ -2493,6 +2493,7 @@ static bool mtk_is_charger_on(struct mtk_charger *info)
 	return true;
 }
 
+#ifdef CONFIG_MTK_KERNEL_POWER_OFF_CHARGING
 static void charger_send_kpoc_uevent(struct mtk_charger *info)
 {
 	static bool first_time = true;
@@ -2540,6 +2541,7 @@ static void kpoc_power_off_check(struct mtk_charger *info)
 		charger_send_kpoc_uevent(info);
 	}
 }
+#endif
 
 static void charger_status_check(struct mtk_charger *info)
 {
@@ -2667,7 +2669,9 @@ static int charger_routine_thread(void *arg)
 		check_battery_exist(info);
 		check_dynamic_mivr(info);
 		charger_check_status(info);
+#ifdef CONFIG_MTK_KERNEL_POWER_OFF_CHARGING
 		kpoc_power_off_check(info);
+#endif
 
 		if (is_disable_charger(info) == false &&
 			is_charger_on == true &&

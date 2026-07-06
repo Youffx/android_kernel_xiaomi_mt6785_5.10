@@ -843,6 +843,17 @@ config MTK_CHARGER
 	  maintains charging status.
 	  Say no if not using MediaTek charging driver.
 
+config MTK_KERNEL_POWER_OFF_CHARGING
+	bool "MediaTek kernel power off charging"
+	depends on MTK_CHARGER
+	default y
+	help
+	  Say yes to support kernel power off charging (KPOC) feature.
+	  Power off charging runs by kernel with charging animation
+	  served by the kpoc service. When enabled, the device will
+	  enter charging mode when plugged in while powered off.
+	  Say no to disable KPOC.
+
 config MTK_PUMP_EXPRESS_PLUS_SUPPORT
 	tristate "MediaTek PUMP EXPRESS PLUS"
 	depends on MTK_CHARGER
