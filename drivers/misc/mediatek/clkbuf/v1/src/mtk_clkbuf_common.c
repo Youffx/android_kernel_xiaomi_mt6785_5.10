@@ -8,6 +8,7 @@
 #include "mtk_clkbuf_common.h"
 
 static const char *chip_name[CLKBUF_CHIP_ID_MAX] __initconst = {
+	[MT6785] = "mediatek,mt6785",
 	[MT6789] = "mediatek,mt6789",
 	[MT6833] = "mediatek,mt6833",
 	[MT6855] = "mediatek,mt6855",
