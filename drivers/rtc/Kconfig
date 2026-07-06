@@ -1831,8 +1831,18 @@ config RTC_DRV_MT2712
 	  This drive can also be built as a module. If so, the module
 	  will be called rtc-mt2712.
 
+config RTC_DRV_MT6358
+	tristate "MediaTek MT6358/MT6359 PMIC based RTC"
+	depends on ARCH_MEDIATEK || COMPILE_TEST
+	help
+	  This selects the MediaTek(R) RTC driver for MT6358, MT6359 and
+	  MT6359P PMICs. RTC is part of MediaTek PMIC.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-mt6358.
+
 config RTC_DRV_MT6397
-	tristate "MediaTek PMIC based RTC"
+	tristate "MediaTek MT6397 PMIC based RTC"
 	depends on MFD_MT6397 || COMPILE_TEST
 	select IRQ_DOMAIN
 	help

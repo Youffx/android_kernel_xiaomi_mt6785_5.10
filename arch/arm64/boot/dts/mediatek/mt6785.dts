@@ -849,6 +849,10 @@ page_owner=on loop.max_part=7";
 			interrupt-parent = <&pio>;
 			interrupts = <193 IRQ_TYPE_LEVEL_HIGH 193 0>;
 			status = "okay";
+
+			rtc {
+				compatible = "mediatek,mt6359-rtc";
+			};
 		};
 	};
 
