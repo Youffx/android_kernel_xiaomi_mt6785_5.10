@@ -27,7 +27,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | F2FS | ✅ | ✅ | + security, + encryption (4.19) / inline crypto (5.10) |
 | EROFS | ❌ | ✅ | New in 5.10 |
 | exFAT | ✅ | ✅ | |
-| Off-mode charging | ✅ | ❌ | `CONFIG_MTK_KERNEL_POWER_OFF_CHARGING` missing |
+| Off-mode charging | ✅ | ✅ | Ported from 4.19 |
 
 ### Display
 
@@ -266,13 +266,9 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 
 ## Summary
 
-**Overall completeness: ~92%**
+**Overall completeness: ~95%**
 
-### Must-port from 4.19 (1 item)
-
-| Item | Impact |
-|------|--------|
-| Off-mode charging (`MTK_KERNEL_POWER_OFF_CHARGING`) | Device won't power on when plugged into charger while off |
+All known 4.19 features have been ported. Remaining ❌ are minor items that do not block boot or core functionality.
 
 ### Restructured (must test, no porting needed)
 
