@@ -20,7 +20,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | SMP (8 cores, 2xA76+6xA55) | ✅ | ✅ | `NR_CPUS=8`, `SCHED_MC` |
 | GICv3 / ARM arch timer | ✅ | ✅ | DTS unchanged |
 | PSCI | ✅ | ✅ | DTS unchanged |
-| KASLR | ✅ | ⚠️ | Not explicit in defconfig (may be arch default) |
+| KASLR | ✅ | ⚠️ | `RANDOMIZE_BASE` not set in defconfig (arch default may apply) |
 | eMMC (mmc0, HS400, CQHCI) | ✅ | ✅ | DTSI identical, `MMC_MTK` |
 | SD card (mmc1) | ✅ | ✅ | DTSI identical |
 | UFS 3.1 | ✅ | ✅ | `SCSI_UFS_MEDIATEK` + HPB, TW, crypto |
@@ -28,6 +28,8 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | EROFS | ❌ | ✅ | New in 5.10 |
 | exFAT | ✅ | ✅ | |
 | Off-mode charging | ✅ | ✅ | Ported from 4.19 |
+| Mediatek Watchdog | ✅ | ⚠️ | `drivers/watchdog/mtk_wdt.c` exists but `MEDIATEK_WATCHDOG` not in defconfig |
+| DRAM log store | ✅ | ✅ | Same addr `0x0011DF00`, size `0x100` |
 
 ### Display
 
@@ -43,8 +45,8 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | MDP3 | ✅ | ✅ | DTS unchanged |
 | DRE30 | ✅ | ✅ | |
 | AAL | ✅ | ✅ | |
-| Round corner | ✅ | ⚠️ | Not explicit in 5.10 defconfig |
-| Backlight (2047 steps) | ✅ | ⚠️ | Not explicit (DRM backlight may differ) |
+| Round corner | ✅ | ⚠️ | Not in defconfig (DRM v2 may handle differently) |
+| Backlight (2047 steps) | ✅ | ⚠️ | Not in defconfig; DRM backlight path may differ |
 | Platform driver | `video/mt6785/` (DDP, primary_display, layering_rule, disp_pm_qos) | `drm/mediatek/mediatek_v2/platform/mtk_drm_6785.c` | Restructured — **must verify on hardware** |
 
 ### GPU
@@ -61,7 +63,8 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 
 | Component | 4.19 | 5.10 | Notes |
 |-----------|------|------|-------|
-| CPUFreq | ✅ | ✅ | `cpufreq_v1/src/mach/mt6785/` in both |
+| CPUFreq | ✅ | ✅ | + `mediatek-cpufreq-hw.c`, `mediatek-mcupm-cpufreq.c` in 5.10 |
+| CPUFreq default governor | `SCHEDUTIL` | ⚠️ | Not set in defconfig — kernel defaults to `performance` |
 | SPM / idle states | ✅ | ✅ | `spm/mt6785/` + `mcdi/mt6785/` in both |
 | DVFSRC | `helio-dvfsrc-mt6785.c` | `mtk-dvfsrc.c` + interconnect | Correctly replaced |
 | DVFSRC regulator | ❌ | ✅ | New in 5.10 |
@@ -106,14 +109,15 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | SCP audio | ❌ (built-in) | ✅ (as module) | Improved |
 | BTCVSD (BT voice) | ✅ | ✅ | |
 | Aurisys phone call | ✅ | ✅ | Ported from 4.19 |
-| Barge-in (VOW) | ✅ | ⚠️ | Defconfig option missing |
+| Barge-in (VOW) | ✅ | ⚠️ | `MTK_VOW_BARGE_IN_SUPPORT` not in defconfig |
 | ADSP v2 | ❌ | ✅ | New in 5.10 |
+| USB audio (SND_USB_AUDIO) | ✅ | ⚠️ | Not in defconfig — USB-C headsets silent |
 
 ### Camera ISP
 
 | Component | 4.19 | 5.10 | Notes |
 |-----------|------|------|-------|
-| Sensor list | 10 sensors | ✅ | Identical string, +2 extra sensors in 5.10 |
+| Sensor list | 10 sensors | ✅ | Identical string |
 | ISP RSC | `CAMERA_ISP_RSC` | `CAMERA_RSC_ISP6S` | Renamed |
 | ISP WPE | `CAMERA_ISP_WPE` | `CAMERA_WPE_ISP6S` | Renamed |
 | ISP DPE | `CAMERA_ISP_DPE` | `CAMERA_DPE_ISP6S` | Renamed |
@@ -126,7 +130,9 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Lens | ✅ | ✅ | |
 | CAM_CAL | ✅ | ✅ | |
 | CMDQ | `CMDQ_V3` + `CMDQ` (legacy) | `CMDQ_MBOX_EXT` (mailbox) | **Restructured** |
-| Flashlight | `MT6360_FLED` + `PT` | `FLASHLIGHT_DLPT` only | PT flash config may be missing |
+| Flashlight MT6360 | ✅ | ⚠️ | `MTK_FLASHLIGHT_MT6360` not in defconfig |
+| Flashlight PT | ✅ | ⚠️ | `MTK_FLASHLIGHT_PT` not in defconfig |
+| Flashlight DLPT | ✅ | ✅ | Set in defconfig |
 | Secure video path | ✅ | ✅ | Ported from 4.19 |
 | DRM key management | ✅ | ✅ | Ported from 4.19 |
 
@@ -137,7 +143,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | MT6631 combo WiFi/BT/GPS | ✅ | ✅ | `MTK_COMBO` + `CONSYS_6785` |
 | FM radio (MT6631) | ✅ | ✅ | |
 | NFC | ✅ | ✅ | `NFC_CHIP_SUPPORT` |
-| NFC clock buffer | ✅ | ❌ | Minor |
+| NFC clock buffer | ✅ | ✅ | `MTK_CLKBUF_NFC` replaces `MTK_NFC_CLKBUF_ENABLE` |
 | Connectivity FEM | ✅ | ✅ | Ported from 4.19 |
 | CCCI / modem (MD1) | ✅ | ✅ | `ECCCI_DRIVER` + `C2K` |
 | BTIF | ✅ | ✅ | |
@@ -171,8 +177,9 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Goodix fingerprint | ✅ | ✅ | |
 | AW8622 haptics | ✅ | ✅ | `AW8622_HAPTIC`, DTS node present |
 | Vibrator | ✅ | ✅ | |
-| Keypad | `KEYBOARD_MTK` | `KEYBOARD_MTK_KPD` | Different driver — must test |
-| Power key (PMIC) | ✅ | ⚠️ | Defconfig option missing |
+| Keypad driver | `KEYBOARD_MTK` | `KEYBOARD_MTK_KPD` | Different driver — must test |
+| Power key (PMIC) | ✅ | ⚠️ | `KPD_PWRKEY_USE_PMIC` / `KEYBOARD_MTK_PMIC` not in defconfig |
+| Reboot modes (onekey) | ✅ | ⚠️ | `ONEKEY_REBOOT_*` not in defconfig |
 | USB trance vibrator | ✅ | ✅ | Enabled in defconfig |
 
 ### PMIC & Charging
@@ -180,11 +187,12 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Component | 4.19 | 5.10 | Notes |
 |-----------|------|------|-------|
 | MT6359 PMIC | ✅ | ✅ | Restructured under `pmic/mt6359/v1/` |
-| MT6360 sub-PMIC | ✅ | ⚠️ | May be selected via Kconfig |
-| MT6360 charger | ✅ | ⚠️ | May be selected via Kconfig |
+| MT6360 sub-PMIC MFD | `MFD_MT6360_PMU` | ⚠️ | `MFD_MT6360` not in defconfig (name changed) |
+| MT6360 charger | `MT6360_PMU_CHARGER` | ⚠️ | `CHARGER_MT6360` not in defconfig |
+| MT6360 PMIC / LDO | `MT6360_PMIC` / `MT6360_LDO` | ⚠️ | Not in defconfig |
 | BQ2597X charge pump | ✅ | ✅ | |
 | LN8000 charge pump | ✅ | ✅ | |
-| Battery fuel gauge | `MTK_GAUGE_VERSION=30` | `BATTERY_MAX1721X` | Different driver |
+| Battery fuel gauge | `MTK_GAUGE_VERSION=30` | `BATTERY_MAX1721X` | Different driver name, same MAX17215 hardware |
 | Battery DTS (OCV tables) | ✅ | ✅ | Identical |
 | WL2866D camera LDO | ✅ | ✅ | `REGULATOR_WL2866D` |
 | Charger type detect | ✅ | ✅ | Renamed to `MTK_CHARGER_TYPE_DETECT` in 5.10 |
@@ -197,12 +205,14 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 |-----------|------|------|-------|
 | MTU3 | ✅ | ✅ | |
 | XHCI | ✅ | ✅ | |
+| USB OTG | ✅ | ⚠️ | Not in defconfig |
 | ConfigFS (serial, ACM, RNDIS, mass storage) | ✅ | ✅ | + NCM, ECM, F_FS in 5.10 |
 | ConfigFS uevent | ❌ | ✅ | New in 5.10 |
-| FastMeta USB | ✅ | ✅ | `MTK_USB_META` already in tree, enabled in defconfig |
-| USB PHY | `mu3phy/mt6785/` | `PHY_MTK_TPHY` | Restructured |
+| ConfigFS F_HID | ✅ | ❌ | Not in defconfig |
+| FastMeta USB | ✅ | ✅ | `MTK_USB_META` in defconfig |
+| USB PHY | `mu3phy/mt6785/` | `PHY_MTK_TPHY` | Restructured — no `PHY_MTK_USB` equivalent in 5.10 |
 | USB3 speed | ❌ (high-speed only) | ✅ (super-speed) | 5.10 enables USB3 — verify HW |
-| Type-C MUX | ✅ | ⚠️ | Defconfig option missing |
+| Type-C MUX | ✅ | ⚠️ | `MTK_USB_TYPEC_U3_MUX` not in defconfig |
 
 ### Video Codec
 
@@ -221,6 +231,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | LVTS | `thermal/mt6785/src/mtk_lvts_tc.c` | ✅ | Identical |
 | Thermal wrapper | `thermal/mt6785/src/mtk_tc_wrapper.c` | ✅ | Identical |
 | Thermal zones (per-SoC) | `thermal/common/thermal_zones/` | ❌ (generic only) | May use defaults |
+| PMIC TS channels | ✅ | ✅ | 6359vcore, 6359tsx, 6359vgpu, 6359dcxo, 6359vproc |
 
 ### Security & TEE
 
@@ -241,15 +252,60 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 |-----------|------|------|-------|
 | PWM | ✅ | ✅ | |
 | LEDs | ✅ | ✅ | |
-| RTC | `RTC_DRV_MT6358` | ⚠️ | Not explicit in defconfig |
-| Watchdog | `MEDIATEK_WATCHDOG` | ⚠️ | Not explicit in defconfig |
+| RTC (MT6359) | `rtc-mt6358.c` + vendor HAL | ❌ | **Driver missing — must port from 4.19** |
+| Watchdog | `MEDIATEK_WATCHDOG` | ⚠️ | Driver exists in tree, not in defconfig |
 | SPI | ✅ | ✅ | `SPI_MT65XX` |
 | I2C | ✅ | ✅ | |
-| AuxADC | `MT635X_AUXADC` + `MT6577_AUXADC` | `MT6577_AUXADC` only | |
+| AuxADC | `MT635X_AUXADC` + `MT6577_AUXADC` | ⚠️ | Only `MT6577_AUXADC` set; `MT635X_AUXADC` missing |
 | IR TX | ✅ | ✅ | DTS node present |
-| devinfo | ✅ | ❌ | `MTK_DEVINFO` missing |
+| devinfo | ✅ | ❌ | `MTK_DEVINFO` absent from 5.10 Kconfig tree |
 | MET profiling | ✅ | ✅ | Ported from 4.19 |
-| DRAM log store | ✅ | ✅ | Same addr/size |
+
+---
+
+## Defconfig Gaps: Quick-Fix Checklist
+
+These configs exist in 5.10's Kconfig tree but are **not enabled** in `rosemary_defconfig`. They should be added for feature parity with 4.19.
+
+```
+# P1 - Core stability
+CONFIG_MEDIATEK_WATCHDOG=y
+CONFIG_RANDOMIZE_BASE=y
+
+# P1 - PMIC / Power
+CONFIG_MFD_MT6360=y
+CONFIG_MEDIATEK_MT635X_AUXADC=y
+
+# P2 - Display / Input
+CONFIG_MTK_ROUND_CORNER_SUPPORT=y           # if DRM v2 supports it
+CONFIG_KEYBOARD_MTK_PMIC=y                  # power key from PMIC
+CONFIG_ONEKEY_REBOOT_NORMAL_MODE=y
+CONFIG_ONEKEY_REBOOT_OTHER_MODE=y
+
+# P2 - Flashlight
+CONFIG_MTK_FLASHLIGHT_MT6360=y
+CONFIG_MTK_FLASHLIGHT_PT=y
+CONFIG_MTK_FLASHLIGHT_PT_STRICT=y
+
+# P2 - Audio
+CONFIG_SND_USB_AUDIO=y
+CONFIG_MTK_VOW_BARGE_IN_SUPPORT=y
+
+# P2 - USB
+CONFIG_USB_OTG=y
+CONFIG_MTK_USB_TYPEC_U3_MUX=y
+
+# P3 - Power efficiency
+CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
+```
+
+## Code Gaps: Must Port From 4.19
+
+| Component | Files to Port | Priority | Impact if Missing |
+|-----------|--------------|----------|-------------------|
+| **RTC (MT6359)** | `drivers/rtc/rtc-mt6358.c` (+ vendor HAL if needed) | **P1** | Time won't persist across reboots; Android alarm breaks |
+| **MTK_DEVINFO** | `drivers/misc/mediatek/devinfo/` | P3 | Vendor HAL sysfs interface missing |
+| **Leakage table** | `leakage_table/mt6785/` data files | P3 | Power estimation slightly off |
 
 ---
 
@@ -260,30 +316,56 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | ✅ | Present and equivalent to 4.19 |
 | ⚠️ | Present but needs verification or minor config difference |
 | ❌ | Missing from 5.10, needs porting or functionality impaired |
-| Restructured | Replaced by modern framework equivalent — needs functional testing |
+| Δ | Kconfig name changed, functionally equivalent |
+| ↻ | Restructured — replaced by modern framework equivalent |
+
+---
+
+## Implementation Roadmap
+
+### Phase 1 — Boot & Core (blocking)
+1. **Port RTC driver** — `rtc-mt6358.c` from 4.19. MT6358 and MT6359 RTC blocks are register-compatible. Without this, system time resets every boot.
+2. **Enable watchdog + KASLR** in defconfig — system stability and security.
+3. **Enable MFD_MT6360 + MT635X_AUXADC** — charging and PMIC ADC functionality.
+4. **Verify eMMC/UFS boot** with flattened MMC driver.
+
+### Phase 2 — Display & Input
+5. **Test DRM v2 display** — panel init, brightness, touch.
+6. **Enable PMIC power key + reboot mode configs**.
+7. **Test camera flashlight** after enabling flash drivers.
+
+### Phase 3 — Audio & USB
+8. **Enable SND_USB_AUDIO** — USB-C audio support.
+9. **Test USB OTG** host mode and Type-C orientation.
+10. **Enable CPUFreq schedutil** default governor for battery life.
+
+### Phase 4 — Power & Thermal
+11. **Verify thermal zones** in `/sys/class/thermal/`.
+12. **Test battery gauge** reports correct capacity.
+13. **Port leakage table** data for power efficiency.
+
+### Phase 5 — Camera & Sensors
+14. **Verify sensor enumeration** (IMGSENSOR, SCP).
+15. **Test VOW barge-in** with voice assistant.
+
+### Phase 6 — Polish
+16. **Port MTK_DEVINFO** if vendor HAL requires it.
+17. **Test VCODEC** decode/encode with v1 + v2.
+18. **Verify all restructured subsystems** on hardware.
 
 ---
 
 ## Summary
 
-**Overall completeness: ~96%**
+| Category | Count |
+|----------|-------|
+| ❌ Truly missing (code must be ported from 4.19) | **1** — RTC (MT6359) |
+| ⚠️ Config not set (driver exists, needs defconfig change) | **14** |
+| ↻ Restructured (different framework, same function) | **10** |
+| Δ Kconfig name change (functionally equivalent) | **2** |
+| ✅ Equivalent or improved in 5.10 | **~40+** |
 
-All known 4.19 features have been ported. Remaining ❌ are minor items that do not block boot or core functionality.
-
-### Restructured (must test, no porting needed)
-
-| Subsystem | Old (4.19) | New (5.10) |
-|-----------|-----------|------------|
-| Display | `video/mt6785/` (DDP) | `drm/mediatek/mediatek_v2/platform/mtk_drm_6785.c` |
-| ADSP | `adsp/mt6785/` | `adsp/v2/` |
-| M4U IOMMU | `m4u/mt6785/` | `drivers/iommu/mtk_iommu.c` |
-| DVFSRC | `helio-dvfsrc-mt6785.c` | `soc/mediatek/mtk-dvfsrc.c` |
-| CMDQ | `cmdq/v3/` | `cmdq/mailbox/mtk-cmdq-mailbox-ext.c` |
-| Audio DSP | `audio_dsp/mt6785/` | `audio_ipi` + `adsp/v2/` |
-| VOW / Ultra | `scp_vow/mt6785/`, `scp_ultra/mt6785/` | `sound/soc/mediatek/vow/`, `ultrasound/` |
-| VCODEC PM | `mtk-vcodec/mt6785/` | Generic v1/v2 PM |
-| GPU freq | `gpufreq/mt6785/` | `gpufreq/v1/mt6785/` |
-| USB PHY | `mu3phy/mt6785/` | `PHY_MTK_TPHY` |
+**Production readiness without RTC: NOT READY** — RTC is a hard requirement for Android. With RTC ported and all 14 missing defconfigs enabled, approximately **~98% complete**.
 
 ---
 
