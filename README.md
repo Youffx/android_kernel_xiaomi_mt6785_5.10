@@ -68,7 +68,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | SCP sys power domains | ❌ | ✅ | `mtk-scpsys-mt6785.c` — new in 5.10 |
 | PTPOD (voltage droop) | ✅ | ✅ | Ported from 4.19 |
 | Unified power model | ✅ | ✅ | Ported from 4.19 |
-| Clock buffer | ✅ | ❌ | `clkbuf_v1/mt6785/` missing — may affect camera/LCM |
+| Clock buffer | ✅ | ✅ | Chip ID added, generic `dcxo-6359p` driver handles MT6359 PMIC |
 | Leakage table | ✅ | ⚠️ | Generic table present, mt6785-specific data missing |
 | EEM (energy model) | ✅ | ✅ | `eem_v2/mt6785/` in both |
 | Performance observer | ✅ | ✅ | `observer/platform/mt6785/` in both |
@@ -105,7 +105,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Ultrasound proximity | `scp_ultra/mt6785/` | `sound/soc/mediatek/ultrasound/` | **Restructured** |
 | SCP audio | ❌ (built-in) | ✅ (as module) | Improved |
 | BTCVSD (BT voice) | ✅ | ✅ | |
-| Aurisys phone call | ✅ | ❌ | May break carrier calling |
+| Aurisys phone call | ✅ | ✅ | Ported from 4.19 |
 | Barge-in (VOW) | ✅ | ⚠️ | Defconfig option missing |
 | ADSP v2 | ❌ | ✅ | New in 5.10 |
 
@@ -173,7 +173,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Vibrator | ✅ | ✅ | |
 | Keypad | `KEYBOARD_MTK` | `KEYBOARD_MTK_KPD` | Different driver — must test |
 | Power key (PMIC) | ✅ | ⚠️ | Defconfig option missing |
-| USB trance vibrator | ✅ | ❌ | Minor |
+| USB trance vibrator | ✅ | ✅ | Enabled in defconfig |
 
 ### PMIC & Charging
 
@@ -187,7 +187,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Battery fuel gauge | `MTK_GAUGE_VERSION=30` | `BATTERY_MAX1721X` | Different driver |
 | Battery DTS (OCV tables) | ✅ | ✅ | Identical |
 | WL2866D camera LDO | ✅ | ✅ | `REGULATOR_WL2866D` |
-| Charger type detect | ✅ | ❌ | `MTK_EXTERNAL_CHARGER_TYPE_DETECT` missing |
+| Charger type detect | ✅ | ✅ | Renamed to `MTK_CHARGER_TYPE_DETECT` in 5.10 |
 | Type-C PD | ✅ | ✅ | |
 | Water detection | ✅ | ✅ | |
 
@@ -199,7 +199,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | XHCI | ✅ | ✅ | |
 | ConfigFS (serial, ACM, RNDIS, mass storage) | ✅ | ✅ | + NCM, ECM, F_FS in 5.10 |
 | ConfigFS uevent | ❌ | ✅ | New in 5.10 |
-| FastMeta USB | ✅ | ❌ | Meta mode may be broken |
+| FastMeta USB | ✅ | ✅ | `MTK_USB_META` already in tree, enabled in defconfig |
 | USB PHY | `mu3phy/mt6785/` | `PHY_MTK_TPHY` | Restructured |
 | USB3 speed | ❌ (high-speed only) | ✅ (super-speed) | 5.10 enables USB3 — verify HW |
 | Type-C MUX | ✅ | ⚠️ | Defconfig option missing |
@@ -248,7 +248,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | AuxADC | `MT635X_AUXADC` + `MT6577_AUXADC` | `MT6577_AUXADC` only | |
 | IR TX | ✅ | ✅ | DTS node present |
 | devinfo | ✅ | ❌ | `MTK_DEVINFO` missing |
-| MET profiling | ✅ | ❌ | `MTK_MET_PLF` missing |
+| MET profiling | ✅ | ✅ | Ported from 4.19 |
 | DRAM log store | ✅ | ✅ | Same addr/size |
 
 ---
@@ -266,7 +266,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 
 ## Summary
 
-**Overall completeness: ~95%**
+**Overall completeness: ~96%**
 
 All known 4.19 features have been ported. Remaining ❌ are minor items that do not block boot or core functionality.
 
