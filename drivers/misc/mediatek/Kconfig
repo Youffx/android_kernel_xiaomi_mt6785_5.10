@@ -160,6 +160,8 @@ config MTK_MET_DEBUG
 	  Say Y in eng/userdebug build.
 	  If unsure, say N.
 
+source "drivers/misc/mediatek/met_drv/Kconfig"
+
 config RTNL_LOCK_DEBUG
 	bool "rtnl_lock debugging, deadlock detection"
 	depends on STACKTRACE_SUPPORT
