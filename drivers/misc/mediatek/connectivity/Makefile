@@ -73,6 +73,8 @@ ifneq ($(KERNELRELEASE),)
     # Do build-in for Makefile checking
     # export CONFIG_WLAN_DRV_BUILD_IN=y
 
+    obj-$(CONFIG_MTK_CONNFEM) += connfem/
+
     ifeq ($(CONFIG_WLAN_DRV_BUILD_IN),y)
         PATH_TO_WMT_DRV      = vendor/mediatek/kernel_modules/connectivity/common
         PATH_TO_WLAN_CHR_DRV = vendor/mediatek/kernel_modules/connectivity/wlan/adaptor
