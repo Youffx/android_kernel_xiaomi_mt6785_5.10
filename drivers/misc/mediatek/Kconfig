@@ -72,6 +72,7 @@ endmenu # Power
 
 menu "MultiMedia, Display, Camera"
 source "drivers/misc/mediatek/iommu/Kconfig"
+source "drivers/misc/mediatek/pseudo_m4u/Kconfig"
 source "drivers/misc/mediatek/cameraisp/Kconfig"
 source "drivers/misc/mediatek/cmdq/Kconfig"
 source "drivers/misc/mediatek/mtk-interconnect/Kconfig"
