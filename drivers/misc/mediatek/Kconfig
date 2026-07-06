@@ -43,6 +43,23 @@ source "drivers/misc/mediatek/mdpm/Kconfig"
 source "drivers/misc/mediatek/pbm/Kconfig"
 source "drivers/misc/mediatek/pmsr/Kconfig"
 source "drivers/misc/mediatek/timer/Kconfig"
+
+config MTK_PTPOD
+	bool "MTK PTPOD"
+	help
+	  This kernel config can be used to enable PTPOD.
+	  When enable this option, voltage will be
+	  changed which will depended on chip.
+	  If unsure, say N.
+
+config MTK_STATIC_POWER
+	bool "MTK STATIC POWER"
+	help
+	  This kernel config can be used to enable static power.
+	  This information can provide power data to someone who
+	  need it
+	  If unsure, say N.
+
 endmenu # Power
 
 menu "MultiMedia, Display, Camera"
