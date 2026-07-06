@@ -66,8 +66,8 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | DVFSRC | `helio-dvfsrc-mt6785.c` | `mtk-dvfsrc.c` + interconnect | Correctly replaced |
 | DVFSRC regulator | ❌ | ✅ | New in 5.10 |
 | SCP sys power domains | ❌ | ✅ | `mtk-scpsys-mt6785.c` — new in 5.10 |
-| PTPOD (voltage droop) | ✅ | ❌ | Need to port calibration data |
-| Unified power model | ✅ | ❌ | `upower_v2/mt6785` tables missing |
+| PTPOD (voltage droop) | ✅ | ✅ | Ported from 4.19 |
+| Unified power model | ✅ | ✅ | Ported from 4.19 |
 | Clock buffer | ✅ | ❌ | `clkbuf_v1/mt6785/` missing — may affect camera/LCM |
 | Leakage table | ✅ | ⚠️ | Generic table present, mt6785-specific data missing |
 | EEM (energy model) | ✅ | ✅ | `eem_v2/mt6785/` in both |
@@ -127,8 +127,8 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | CAM_CAL | ✅ | ✅ | |
 | CMDQ | `CMDQ_V3` + `CMDQ` (legacy) | `CMDQ_MBOX_EXT` (mailbox) | **Restructured** |
 | Flashlight | `MT6360_FLED` + `PT` | `FLASHLIGHT_DLPT` only | PT flash config may be missing |
-| Secure video path | ✅ | ❌ | Widevine L1 playback broken |
-| DRM key management | ✅ | ❌ | Part of secure path |
+| Secure video path | ✅ | ✅ | Ported from 4.19 |
+| DRM key management | ✅ | ✅ | Ported from 4.19 |
 
 ### Connectivity
 
@@ -138,7 +138,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | FM radio (MT6631) | ✅ | ✅ | |
 | NFC | ✅ | ✅ | `NFC_CHIP_SUPPORT` |
 | NFC clock buffer | ✅ | ❌ | Minor |
-| Connectivity FEM | ✅ | ❌ | May affect antenna tuning |
+| Connectivity FEM | ✅ | ✅ | Ported from 4.19 |
 | CCCI / modem (MD1) | ✅ | ✅ | `ECCCI_DRIVER` + `C2K` |
 | BTIF | ✅ | ✅ | |
 
@@ -266,17 +266,13 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 
 ## Summary
 
-**Overall completeness: ~85-90%**
+**Overall completeness: ~92%**
 
-### Must-port from 4.19 (5 items)
+### Must-port from 4.19 (1 item)
 
 | Item | Impact |
 |------|--------|
 | Off-mode charging (`MTK_KERNEL_POWER_OFF_CHARGING`) | Device won't power on when plugged into charger while off |
-| PTPOD calibration data | CPU voltage droop protection — stability risk |
-| Unified power model tables (`upower_v2/mt6785`) | Suboptimal CPU/GPU frequency co-ordination |
-| Secure video path + DRM key management | Widevine L1 DRM (Netflix, etc.) will not work |
-| Connectivity FEM (`MTK_CONNFEM`) | Antenna tuner may not initialize |
 
 ### Restructured (must test, no porting needed)
 
