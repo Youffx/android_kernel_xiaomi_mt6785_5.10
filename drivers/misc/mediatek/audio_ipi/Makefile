@@ -39,6 +39,9 @@ audio_ipi-objs += common/audio_ipi_dma.o
 audio_ipi-objs += common/audio_ringbuf.o
 audio_ipi-objs += common/audio_ipi_platform_common.o
 
+### phone call task
+audio_ipi-$(CONFIG_MTK_AURISYS_PHONE_CALL_SUPPORT) += common/audio_ipi_client_phone_call.o
+
 ### platform codes
 IPI_PLATFORM_VERSION = v4
 audio_ipi-objs += $(IPI_PLATFORM_VERSION)/audio_ipi_platform.o

@@ -50,6 +50,10 @@
 
 #include <adsp_ipi_queue.h>
 
+#if IS_ENABLED(CONFIG_MTK_AURISYS_PHONE_CALL_SUPPORT)
+#include "audio_ipi_client_phone_call.h"
+#endif
+
 
 
 /*
@@ -698,6 +702,10 @@ static int __init audio_ipi_init(void)
 	audio_messenger_ipi_init();
 
 	init_audio_ipi_dma();
+
+#if IS_ENABLED(CONFIG_MTK_AURISYS_PHONE_CALL_SUPPORT)
+	audio_ipi_client_phone_call_init();
+#endif
 
 #if IS_ENABLED(CONFIG_MTK_AUDIODSP_SUPPORT)
 	adsp_register_notify(&audio_ctrl_notifier);
