@@ -215,5 +215,5 @@ int __weak adaptive_cpu_power_limit(int limit) { return 0; }
 EXPORT_SYMBOL(adaptive_cpu_power_limit);
 int __weak adaptive_gpu_power_limit(int limit) { return 0; }
 EXPORT_SYMBOL(adaptive_gpu_power_limit);
-const char *__weak adaptive_cooler_name(void) { return "stub"; }
+char *__weak adaptive_cooler_name = "stub";
 EXPORT_SYMBOL(adaptive_cooler_name);
