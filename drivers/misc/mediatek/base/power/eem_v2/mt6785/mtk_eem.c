@@ -68,7 +68,7 @@
 
 #include "mtk_eem_internal.h"
 #include <mt-plat/mtk_devinfo.h>
-#include <regulator/consumer.h>
+#include <linux/regulator/consumer.h>
 #include "pmic_regulator.h"
 //#include "mtk_pmic_regulator.h"
 #include "pmic_api_buck.h"
