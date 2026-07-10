@@ -168,6 +168,7 @@ SECTIONS
 	}
 
 	.got.plt : { *(.got.plt) }
+	.plt : { *(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt) }
 
 	. = ALIGN(SEGMENT_ALIGN);
 	_etext = .;			/* End of text section */
@@ -295,13 +296,6 @@ SECTIONS
 
 	HEAD_SYMBOLS
 
-	/*
-	 * Sections that should stay zero sized, which is safer to
-	 * explicitly check instead of blindly discarding.
-	 */
-	.plt : {
-		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
-	}
 	.data.rel.ro : { *(.data.rel.ro) }
 }
 
