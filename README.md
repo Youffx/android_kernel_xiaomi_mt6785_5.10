@@ -47,7 +47,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | MDP3 | ✅ | ✅ | DTS unchanged |
 | DRE30 | ✅ | ✅ | |
 | AAL | ✅ | ✅ | |
-| Round corner | ✅ | ❌ | Kconfig removed in 5.10 |
+| Round corner | ✅ | ✅ | Kconfig entry added |
 | Backlight (2047 steps) | ✅ | ❌ | Kconfig removed in 5.10; DRM handles backlight differently |
 | Platform driver | `video/mt6785/` (DDP, primary_display, layering_rule, disp_pm_qos) | `drm/mediatek/mediatek_v2/platform/mtk_drm_6785.c` | Restructured — **must verify on hardware** |
 
@@ -181,7 +181,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | AW8622 haptics | ✅ | ✅ | `AW8622_HAPTIC`, DTS node present |
 | Vibrator | ✅ | ✅ | |
 | Keypad driver | `KEYBOARD_MTK` | `KEYBOARD_MTK_KPD` | Different driver — must test |
-| Power key (PMIC) | ✅ | ❌ | `KEYBOARD_MTK_PMIC` depends on `MFD_MT6397` (not in 5.10) |
+| Power key (PMIC) | ✅ | ✅ | `MFD_MT6397` enabled, `KEYBOARD_MTK_PMIC` enabled |
 | Reboot modes (onekey) | ✅ | ❌ | Kconfig removed in 5.10 |
 | USB trance vibrator | ✅ | ✅ | Enabled in defconfig |
 
@@ -215,7 +215,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | FastMeta USB | ✅ | ✅ | `MTK_USB_META` in defconfig |
 | USB PHY | `mu3phy/mt6785/` | `PHY_MTK_TPHY` | Restructured — no `PHY_MTK_USB` equivalent in 5.10 |
 | USB3 speed | ❌ (high-speed only) | ✅ (super-speed) | 5.10 enables USB3 — verify HW |
-| Type-C MUX | ✅ | ❌ | `MTK_USB_TYPEC_U3_MUX` Kconfig removed in 5.10 |
+| Type-C MUX | ✅ | ✅ | `MTK_USB_TYPEC_MUX` enabled (renamed from 4.19's `MTK_USB_TYPEC_U3_MUX`) |
 
 ### Video Codec
 
@@ -259,7 +259,7 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 | Watchdog | ✅ | ✅ | `CONFIG_MEDIATEK_WATCHDOG=y` |
 | SPI | ✅ | ✅ | `SPI_MT65XX` |
 | I2C | ✅ | ✅ | |
-| AuxADC | `MT635X_AUXADC` + `MT6577_AUXADC` | ⚠️ | Only `MT6577_AUXADC` set; `MT635X_AUXADC` depends on `MFD_MT6397` (not in 5.10) |
+| AuxADC | `MT635X_AUXADC` + `MT6577_AUXADC` | ✅ | Both enabled via `MFD_MT6397` + `MEDIATEK_MT635X_AUXADC` |
 | IR TX | ✅ | ✅ | DTS node present |
 | devinfo | ✅ | ✅ | Already built as `obj-y` |
 | MET profiling | ✅ | ✅ | Ported from 4.19 |
@@ -272,12 +272,8 @@ These items were present in 4.19 but cannot be replicated in 5.10:
 
 | Component | Reason |
 |-----------|--------|
-| MT635X AuxADC | Depends on `MFD_MT6397` which doesn't exist in 5.10 (our PMIC not supported by upstream MFD) |
 | MTK_FLASHLIGHT_MT6360 | Depends on `RT_FLASHLIGHT` framework removed in 5.10 |
-| KEYBOARD_MTK_PMIC | Depends on `MFD_MT6397` |
-| ONEKEY_REBOOT_* | Kconfig options removed in 5.10 |
-| MTK_ROUND_CORNER_SUPPORT | Kconfig option removed in 5.10 |
-| MTK_USB_TYPEC_U3_MUX | Kconfig option removed in 5.10 |
+| ONEKEY_REBOOT_* | Kconfig options removed in 5.10 (MTK keyboard directory absent) |
 | Backlight (2047 steps) | DRM handles backlight differently in 5.10 |
 
 ## Legend
