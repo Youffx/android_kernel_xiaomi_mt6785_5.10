@@ -52,4 +52,8 @@ extern unsigned int mt_ppm_userlimit_cpu_freq(unsigned int cluster_num,
 extern unsigned int mt_ppm_forcelimit_cpu_core(unsigned int cluster_num,
 	struct ppm_limit_data *data);
 
+/* PTPOD policy */
+extern void mt_ppm_ptpod_policy_activate(void);
+extern void mt_ppm_ptpod_policy_deactivate(void);
+
 #endif

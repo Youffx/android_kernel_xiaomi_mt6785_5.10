@@ -320,9 +320,9 @@ static int set_aud_buf_attr(struct audio_hw_buffer *audio_hwbuf,
 		return -1;
 	}
 
-	ret = set_afe_audio_pcmbuf(audio_hwbuf, substream);
+	ret = scp_set_afe_audio_pcmbuf(audio_hwbuf, substream);
 	if (ret < 0) {
-		pr_info("set_afe_audio_pcmbuf fail\n");
+		pr_info("scp_set_afe_audio_pcmbuf fail\n");
 		return -1;
 	}
 
@@ -331,18 +331,18 @@ static int set_aud_buf_attr(struct audio_hw_buffer *audio_hwbuf,
 	audio_hwbuf->audio_memiftype = dai->id;
 	audio_hwbuf->memory_type = get_audio_mem_type(substream);
 
-	ret = set_audiobuffer_threshold(audio_hwbuf, substream);
+	ret = scp_set_audiobuffer_threshold(audio_hwbuf, substream);
 	if (ret < 0) {
-		pr_info("set_audiobuffer_threshold fail\n");
+		pr_info("scp_set_audiobuffer_threshold fail\n");
 		return -1;
 	}
 
-	ret = set_audiobuffer_attribute(
+	ret = scp_set_audiobuffer_attribute(
 		audio_hwbuf,
 		substream, params,
 		scp_audio_get_pcmdir(substream->stream, *audio_hwbuf));
 	if (ret < 0) {
-		pr_info("set_audiobuffer_attribute fail\n");
+		pr_info("scp_set_audiobuffer_attribute fail\n");
 		return -1;
 	}
 
@@ -714,9 +714,9 @@ static int mtk_scp_audio_pcm_hw_params(struct snd_soc_component *component,
 		return -1;
 	}
 
-	reset_audiobuffer_hw(&task_base->share_hw_buf);
-	reset_audiobuffer_hw(&task_base->temp_work_buf);
-	RingBuf_Reset(&task_base->ring_buf);
+	scp_reset_audiobuffer_hw(&task_base->share_hw_buf);
+	scp_reset_audiobuffer_hw(&task_base->temp_work_buf);
+	scp_RingBuf_Reset(&task_base->ring_buf);
 
 	scp_audio->request_dram_resource(scp_audio->dev);
 
@@ -725,7 +725,7 @@ static int mtk_scp_audio_pcm_hw_params(struct snd_soc_component *component,
 		ret = scp_audio_free_sharemem_ring(task_base,
 						   scp_audio->genpool);
 		if (!ret)
-			release_snd_dmabuffer(&substream->dma_buffer);
+			scp_release_snd_dmabuffer(&substream->dma_buffer);
 	}
 	if (ret < 0) {
 		pr_warn("%s err\n", __func__);
@@ -750,15 +750,15 @@ static int mtk_scp_audio_pcm_hw_params(struct snd_soc_component *component,
 					&substream->dma_buffer);
 	if (ret < 0)
 		goto error;
-	ret = set_audiobuffer_hw(&task_base->share_hw_buf,
+	ret = scp_set_audiobuffer_hw(&task_base->share_hw_buf,
 				 SCP_BUFFER_SHARE_MEM);
 	if (ret < 0)
 		goto error;
-	ret = set_audiobuffer_memorytype(&task_base->share_hw_buf,
+	ret = scp_set_audiobuffer_memorytype(&task_base->share_hw_buf,
 					 MEMORY_DRAM);
 	if (ret < 0)
 		goto error;
-	ret = set_audiobuffer_attribute(&task_base->share_hw_buf,
+	ret = scp_set_audiobuffer_attribute(&task_base->share_hw_buf,
 					substream,
 					params,
 					scp_audio_get_pcmdir(substream->stream,
@@ -774,7 +774,7 @@ static int mtk_scp_audio_pcm_hw_params(struct snd_soc_component *component,
 	       sizeof(struct audio_hw_buffer));
 
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s(__func__, &task_base->ring_buf);
+	scp_dump_rbuf_s(__func__, &task_base->ring_buf);
 #endif
 
 	/* send to task with hw_param information , buffer and pcm attribute */
@@ -823,11 +823,11 @@ static int mtk_scp_audio_pcm_hw_free(struct snd_soc_component *component,
 		ret = scp_audio_free_sharemem_ring(task_base,
 						   scp_audio->genpool);
 		if (!ret)
-			release_snd_dmabuffer(&substream->dma_buffer);
+			scp_release_snd_dmabuffer(&substream->dma_buffer);
 	}
 
 	/* reset buf setting */
-	ret = reset_audiobuffer_hw(&task_base->share_hw_buf);
+	ret = scp_reset_audiobuffer_hw(&task_base->share_hw_buf);
 
 	scp_audio->release_dram_resource(scp_audio->dev);
 
@@ -859,15 +859,15 @@ static int mtk_scp_audio_pcm_hw_prepare(struct snd_soc_component *component,
 	if (substream->runtime->stop_threshold == ~(0U))
 		substream->runtime->stop_threshold = ULONG_MAX;
 
-	clear_audiobuffer_hw(hw_buf);
-	RingBuf_Reset(&task_base->ring_buf);
-	RingBuf_Bridge_Reset(&hw_buf->aud_buffer.buf_bridge);
-	RingBuf_Bridge_Reset(
+	scp_clear_audiobuffer_hw(hw_buf);
+	scp_RingBuf_Reset(&task_base->ring_buf);
+	scp_RingBuf_Bridge_Reset(&hw_buf->aud_buffer.buf_bridge);
+	scp_RingBuf_Bridge_Reset(
 		&task_base->temp_work_buf.aud_buffer.buf_bridge);
 
-	ret = set_audiobuffer_threshold(hw_buf, substream);
+	ret = scp_set_audiobuffer_threshold(hw_buf, substream);
 	if (ret < 0)
-		pr_warn("%s set_audiobuffer_attribute err\n", __func__);
+		pr_warn("%s scp_set_audiobuffer_attribute err\n", __func__);
 
 	pr_info("%s(), %s start_threshold: %u stop_threshold: %u period_size: %d period_count: %d\n",
 		__func__, task_name,
@@ -977,8 +977,8 @@ static int mtk_scp_audio_pcm_copy_dl(struct snd_pcm_substream *substream,
 	const char *task_name = get_taskname_by_daiid(id);
 
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s(__func__, &task_base->ring_buf);
-	dump_rbuf_bridge_s(__func__,
+	scp_dump_rbuf_s(__func__, &task_base->ring_buf);
+	scp_dump_rbuf_bridge_s(__func__,
 			   &task_base->share_hw_buf.aud_buffer.buf_bridge);
 #endif
 
@@ -989,24 +989,24 @@ static int mtk_scp_audio_pcm_copy_dl(struct snd_pcm_substream *substream,
 		return -1;
 	}
 
-	Ringbuf_Check(ringbuf);
-	Ringbuf_Bridge_Check(
+	scp_Ringbuf_Check(ringbuf);
+	scp_Ringbuf_Bridge_Check(
 		&task_base->share_hw_buf.aud_buffer.buf_bridge);
 
 	spin_lock_irqsave(ringbuf_lock, flags);
-	availsize = RingBuf_getFreeSpace(ringbuf);
+	availsize = scp_RingBuf_getFreeSpace(ringbuf);
 	spin_unlock_irqrestore(ringbuf_lock, flags);
 	if (availsize < copy_size) {
 		pr_info("%s, id = %d, fail copy_size = %d availsize = %d\n",
-			__func__, id, copy_size, RingBuf_getFreeSpace(ringbuf));
-		dump_rbuf_s("check dlcopy", &task_base->ring_buf);
-		dump_rbuf_bridge_s("check dlcopy",
+			__func__, id, copy_size, scp_RingBuf_getFreeSpace(ringbuf));
+		scp_dump_rbuf_s("check dlcopy", &task_base->ring_buf);
+		scp_dump_rbuf_bridge_s("check dlcopy",
 			   &task_base->share_hw_buf.aud_buffer.buf_bridge);
 		return -1;
 	}
 
-	RingBuf_copyFromUserLinear(ringbuf, buf, copy_size);
-	RingBuf_Bridge_update_writeptr(buf_bridge, copy_size);
+	scp_RingBuf_copyFromUserLinear(ringbuf, buf, copy_size);
+	scp_RingBuf_Bridge_update_writeptr(buf_bridge, copy_size);
 
 	/* send audio_hw_buffer to SCP side*/
 	ipi_audio_buf = (void *)task_base->msg_atod_share_buf.va_addr;
@@ -1024,7 +1024,7 @@ static int mtk_scp_audio_pcm_copy_dl(struct snd_pcm_substream *substream,
 			(char *)&task_base->msg_atod_share_buf.phy_addr);
 
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s(__func__, ringbuf);
+	scp_dump_rbuf_s(__func__, ringbuf);
 #endif
 
 	return ret;
@@ -1045,28 +1045,28 @@ static int mtk_scp_audio_pcm_copy_ul(struct snd_pcm_substream *substream,
 	spinlock_t *ringbuf_lock = &task_base->ringbuf_lock;
 
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s(__func__, &task_base->ring_buf);
-	dump_rbuf_bridge_s(__func__,
+	scp_dump_rbuf_s(__func__, &task_base->ring_buf);
+	scp_dump_rbuf_bridge_s(__func__,
 			   &task_base->share_hw_buf.aud_buffer.buf_bridge);
 #endif
-	Ringbuf_Check(&task_base->ring_buf);
-	Ringbuf_Bridge_Check(
+	scp_Ringbuf_Check(&task_base->ring_buf);
+	scp_Ringbuf_Bridge_Check(
 			&task_base->share_hw_buf.aud_buffer.buf_bridge);
 
 	spin_lock_irqsave(ringbuf_lock, flags);
-	availsize = RingBuf_getDataCount(ringbuf);
+	availsize = scp_RingBuf_getDataCount(ringbuf);
 	spin_unlock_irqrestore(ringbuf_lock, flags);
 
 	if (availsize < copy_size) {
 		pr_info("%s fail copy_size = %d availsize = %d\n", __func__,
-			copy_size, RingBuf_getFreeSpace(ringbuf));
+			copy_size, scp_RingBuf_getFreeSpace(ringbuf));
 		return -1;
 	}
 
 	/* get audio_buffer from ring buffer */
-	ringbuf_copyto_user_linear(buf, &task_base->ring_buf, copy_size);
+	scp_ringbuf_copyto_user_linear(buf, &task_base->ring_buf, copy_size);
 	spin_lock_irqsave(ringbuf_lock, flags);
-	sync_bridge_ringbuf_readidx(&task_base->share_hw_buf.aud_buffer.buf_bridge,
+	scp_sync_bridge_ringbuf_readidx(&task_base->share_hw_buf.aud_buffer.buf_bridge,
 				    &task_base->ring_buf);
 	spin_unlock_irqrestore(ringbuf_lock, flags);
 
@@ -1080,9 +1080,9 @@ static int mtk_scp_audio_pcm_copy_ul(struct snd_pcm_substream *substream,
 			(char *)&task_base->msg_atod_share_buf.phy_addr);
 
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_bridge_s("1 mtk_scp_audio_ul_handler",
+	scp_dump_rbuf_bridge_s("1 mtk_scp_audio_ul_handler",
 				&task_base->share_hw_buf.aud_buffer.buf_bridge);
-	dump_rbuf_s("1 mtk_scp_audio_ul_handler",
+	scp_dump_rbuf_s("1 mtk_scp_audio_ul_handler",
 				&task_base->ring_buf);
 #endif
 	return ret;
@@ -1151,7 +1151,7 @@ static bool mtk_scp_aud_check_exception(struct mtk_scp_audio_base *scp_aud,
 	/* reset message */
 	if (ipi_msg && ipi_msg->param2 == SCP_DL_CONSUME_RESET) {
 		pr_info("%s() %s scp audio reset\n", __func__, task_name);
-		RingBuf_Reset(&task_base->ring_buf);
+		scp_RingBuf_Reset(&task_base->ring_buf);
 		snd_pcm_period_elapsed(task_base->substream);
 		return true;
 	}
@@ -1215,18 +1215,18 @@ static void mtk_scp_aud_dl_consume_handler(struct mtk_scp_audio_base *scp_aud,
 	task_base->share_hw_buf.aud_buffer.buf_bridge.pRead =
 		task_base->temp_work_buf.aud_buffer.buf_bridge.pRead;
 #ifdef DEBUG_VERBOSE_IRQ
-	dump_rbuf_s("dl_consume before sync", &task_base->ring_buf);
-	dump_rbuf_bridge_s("dl_consume before sync",
+	scp_dump_rbuf_s("dl_consume before sync", &task_base->ring_buf);
+	scp_dump_rbuf_bridge_s("dl_consume before sync",
 			   &task_base->share_hw_buf.aud_buffer.buf_bridge);
 #endif
-	sync_ringbuf_readidx(
+	scp_sync_ringbuf_readidx(
 		&task_base->ring_buf,
 		&task_base->share_hw_buf.aud_buffer.buf_bridge);
 
 	spin_unlock_irqrestore(ringbuf_lock, flags);
 
 #ifdef DEBUG_VERBOSE_IRQ
-	dump_rbuf_s("dl_consume after sync", &task_base->ring_buf);
+	scp_dump_rbuf_s("dl_consume after sync", &task_base->ring_buf);
 #endif
 	/* notify subsream */
 	snd_pcm_period_elapsed(task_base->substream);
@@ -1293,7 +1293,7 @@ static void mtk_scp_aud_ul_handler(struct mtk_scp_audio_base *scp_aud,
 
 	if (ipi_msg && ipi_msg->param2 == SCP_UL_READ_RESET) {
 		spin_lock_irqsave(ringbuf_lock, flags);
-		RingBuf_Reset(&task_base->ring_buf);
+		scp_RingBuf_Reset(&task_base->ring_buf);
 		/* set buf size full to trigger pcm_read */
 		task_base->ring_buf.datacount = task_base->ring_buf.bufLen;
 		spin_unlock_irqrestore(ringbuf_lock, flags);
@@ -1311,19 +1311,19 @@ static void mtk_scp_aud_ul_handler(struct mtk_scp_audio_base *scp_aud,
 	task_base->share_hw_buf.aud_buffer.buf_bridge.pWrite =
 		(task_base->temp_work_buf.aud_buffer.buf_bridge.pWrite);
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_bridge_s(__func__,
+	scp_dump_rbuf_bridge_s(__func__,
 			   &task_base->temp_work_buf.aud_buffer.buf_bridge);
-	dump_rbuf_bridge_s(__func__,
+	scp_dump_rbuf_bridge_s(__func__,
 			   &task_base->share_hw_buf.aud_buffer.buf_bridge);
 #endif
 
 	spin_lock_irqsave(ringbuf_lock, flags);
-	sync_ringbuf_writeidx(&task_base->ring_buf,
+	scp_sync_ringbuf_writeidx(&task_base->ring_buf,
 			      &task_base->share_hw_buf.aud_buffer.buf_bridge);
 	spin_unlock_irqrestore(ringbuf_lock, flags);
 
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s(__func__, &task_base->ring_buf);
+	scp_dump_rbuf_s(__func__, &task_base->ring_buf);
 #endif
 
 	/* notify subsream */
@@ -1411,7 +1411,7 @@ static snd_pcm_uframes_t mtk_scp_audio_pcm_pointer_ul
 		return 0;
 	}
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s(__func__, &task_base->ring_buf);
+	scp_dump_rbuf_s(__func__, &task_base->ring_buf);
 #endif
 
 	ptr_bytes = task_base->ring_buf.pWrite - task_base->ring_buf.pBufBase;
@@ -1436,7 +1436,7 @@ static snd_pcm_uframes_t mtk_scp_audio_pcm_pointer_dl
 		return 0;
 	}
 #ifdef DEBUG_VERBOSE
-	dump_rbuf_s("-mtk_dsphw_pcm_pointer_dl", &task_base->ring_buf);
+	scp_dump_rbuf_s("-mtk_dsphw_pcm_pointer_dl", &task_base->ring_buf);
 #endif
 
 	/* handle for underflow */

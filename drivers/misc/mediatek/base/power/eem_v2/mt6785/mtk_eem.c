@@ -51,6 +51,7 @@
 #endif
 
 #include <mt-plat/mtk_chip.h>
+#include <mt-plat/mboot_params.h>
 /* #include <mt-plat/mtk_gpio.h> */
 #include "upmu_common.h"
 #ifdef CONFIG_MTK_GPU_SUPPORT
@@ -1134,10 +1135,10 @@ void base_ops_get_orig_volt_table(struct eem_det *det)
 
 static long long eem_get_current_time_us(void)
 {
-	struct timeval t;
+	struct timespec64 t;
 
-	do_gettimeofday(&t);
-	return((t.tv_sec & 0xFFF) * 1000000 + t.tv_usec);
+	ktime_get_real_ts64(&t);
+	return((t.tv_sec & 0xFFF) * 1000000 + t.tv_nsec / 1000);
 }
 
 /*=============================================================

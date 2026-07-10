@@ -14,14 +14,14 @@ endif
 ccflags-y += -I$(src)/src \
      -I$(MFD_TOP)/
 
+# New GKI (preferred over old)
+ifneq ($(CONFIG_MTK_CLKBUF),y)
 obj-$(CONFIG_MTK_CLK_BUFFER) += clkbuf.o
-
 clkbuf-$(CONFIG_MTK_CLK_BUFFER) +=  src/mtk-clkbuf-ctl.o \
     src/mtk-clkbuf-hw.o
-
 obj-$(CONFIG_MTK_CLK_BUFFER) += clkbuf-pmic.o
-
 clkbuf-pmic-$(CONFIG_MTK_CLK_BUFFER) +=  src/mtk-clkbuf-pmic.o
+endif
 
 # New GKI
 # common clkbuf driver

@@ -32,8 +32,10 @@ static struct audio_task_t g_audio_task_array[TASK_SCENE_SIZE];
 
 int audio_task_register_callback(
 	const uint8_t task_scene,
-	recv_message_t  recv_message)
+	recv_message_t  recv_message,
+	task_unloaded_t task_unloaded_callback)
 {
+	(void)task_unloaded_callback;
 	struct audio_task_t *task = &g_audio_task_array[task_scene];
 
 	/* create hanlder when registering */

@@ -9,6 +9,7 @@ subdir-ccflags-y += -I$(srctree)/drivers/tee/teei/400/common/include
 obj-y += devinfo/
 obj-y += mtk_stubs.o
 obj-y += compat.o
+obj-y += compat_stubs.o
 obj-$(CONFIG_MTK_LEDS) += leds/
 obj-$(CONFIG_MTK_ACCDET) += accdet/
 obj-$(CONFIG_MTK_BLOCK_IO_TRACER) += blocktag/

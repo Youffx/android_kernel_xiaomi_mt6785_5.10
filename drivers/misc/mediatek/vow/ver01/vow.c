@@ -485,7 +485,8 @@ static void vow_service_Init(void)
 
 		/*register IPI handler*/
 		audio_task_register_callback(TASK_SCENE_VOW,
-					     vow_IPICmd_Received);
+					     vow_IPICmd_Received,
+					     NULL);
 		/*Initialization*/
 		VowDrv_Wait_Queue_flag = 0;
 		VoiceData_Wait_Queue_flag = 0;

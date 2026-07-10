@@ -58,10 +58,10 @@ void met_unreg_switch(void)
 }
 
 MET_DEFINE_PROBE(pm_qos_update_request,
-	TP_PROTO(int pm_qos_class, s32 value))
+	TP_PROTO(s32 value))
 {
 	if (met_register_api.met_pm_qos_update_request)
-		met_register_api.met_pm_qos_update_request(pm_qos_class, value);
+		met_register_api.met_pm_qos_update_request(0, value);
 }
 
 MET_DEFINE_PROBE(pm_qos_update_target,
@@ -118,7 +118,6 @@ int met_get_kptr_restrict(void)
 
 void met_arch_setup_dma_ops(struct device *dev)
 {
-	arch_setup_dma_ops(dev, 0, 0, NULL, false);
 }
 
 int met_perf_event_read_local(struct perf_event *ev, u64 *value)
@@ -137,7 +136,7 @@ int met_smp_call_function_single(
 
 u64 met_arch_counter_get_cntvct(void)
 {
-	return arch_counter_get_cntvct();
+	return __arch_counter_get_cntvct();
 }
 
 void met_arch_send_call_function_single_ipi(int cpu)
