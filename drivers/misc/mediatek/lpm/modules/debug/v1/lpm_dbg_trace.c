@@ -12,7 +12,7 @@
 #include <lpm_module.h>
 #include <lpm_resource_constraint_v1.h>
 
-#include <lpm_dbg_fs_common.h>
+#include "lpm_dbg_fs_common.h"
 #include <lpm_dbg_syssram_v1.h>
 
 #include <mtk_lpm_sysfs.h>
