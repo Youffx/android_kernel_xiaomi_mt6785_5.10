@@ -10,7 +10,7 @@
 #include <linux/slab.h>
 
 #include <lpm_module.h>
-#include <lpm_internal.h>
+#include "lpm_internal.h"
 #include <lpm_trace.h>
 
 

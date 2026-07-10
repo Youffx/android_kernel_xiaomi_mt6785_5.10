@@ -9,7 +9,7 @@
 
 #include <lpm_plat_common.h>
 #include <lpm_module.h>
-#include <lpm_internal.h>
+#include "lpm_internal.h"
 
 #include "lpm_resource_ctrl.h"
 
