@@ -3,7 +3,7 @@
  * Copyright (c) 2019 MediaTek Inc.
  */
 #include <mtk_cpuidle_sysfs.h>
-#include <lpm_dbg_fs_common.h>
+#include "lpm_dbg_fs_common.h"
 
 #if IS_ENABLED(CONFIG_MTK_LPM_MT6983)
 #include <lpm_dbg_cpc_v5.h>
