@@ -175,6 +175,7 @@ void mtk_smi_larb_put(struct device *larbdev);
 int mtk_smi_larb_ready(int larbid);
 #endif
 
+#ifndef _MTK_IOMMU_H_
 struct mau_config_info {
 	int m4u_id;
 	int slave;
@@ -183,12 +184,13 @@ struct mau_config_info {
 	unsigned int end;
 	unsigned int port_mask;
 	unsigned int larb_mask;
-	unsigned int wr;/* 1:w, 0:R */
-	unsigned int virt;	/* 1:mva, 0:pa */
-	unsigned int io;	/* 1:output, 0:input  */
-	unsigned int start_bit32;	/* :1; */
-	unsigned int end_bit32;	/* :1; */
+	unsigned int wr;
+	unsigned int virt;
+	unsigned int io;
+	unsigned int start_bit32;
+	unsigned int end_bit32;
 };
+#endif
 
 int mau_start_monitor(unsigned int m4u_id, unsigned int slave,
 			  unsigned int mau,

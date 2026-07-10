@@ -7,6 +7,10 @@ else
     ccflags-y += -D UFS_CLKBUF_SUPPORT=0
 endif
 
+ifneq ($(CONFIG_MTK_CLKBUF),)
+ccflags-y += -I$(srctree)/$(src)/v1/inc
+endif
+
 ccflags-y += -I$(src)/src \
      -I$(MFD_TOP)/
 
@@ -24,7 +28,6 @@ clkbuf-pmic-$(CONFIG_MTK_CLK_BUFFER) +=  src/mtk-clkbuf-pmic.o
 obj-$(CONFIG_MTK_CLKBUF) += clkbuf.o
 ifneq ($(CONFIG_MTK_CLKBUF),)
 	clkbuf-y += v1/src/mtk_clkbuf_common.o
-	ccflags-y += -I$(srctree)/$(src)/v1/inc
 endif
 
 clkbuf-$(CONFIG_MTK_CLKBUF_V1) += v1/src/mtk_clkbuf_ctl.o

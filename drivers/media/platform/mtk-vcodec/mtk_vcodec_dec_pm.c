@@ -452,7 +452,7 @@ void mtk_vcodec_dec_clock_on(struct mtk_vcodec_pm *pm, int hw_id)
 		larb_id = 4;
 
 		//enable UFO port
-		port.ePortID = M4U_PORT_L5_VDEC_UFO_ENC_EXT;
+		port.ePortID = M4U_PORT_HW_VDEC_UFO_ENC_EXT;
 		port.Direction = 0;
 		port.Distance = 1;
 		port.domain = 0;
