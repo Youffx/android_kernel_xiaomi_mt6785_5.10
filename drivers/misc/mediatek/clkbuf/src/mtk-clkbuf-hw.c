@@ -587,9 +587,11 @@ void clk_buf_get_enter_bblpm_cond(u32 *bblpm_cond)
 	(*bblpm_cond) |= BBLPM_SKIP;
 }
 
-static void _clk_buf_get_bblpm_en(u32 *stat)
+static int _clk_buf_get_bblpm_en(u32 *stat)
 {
 	pr_info("not support bblpm\n");
+
+	return CLK_BUF_NOT_SUPPORT;
 }
 static int _clk_buf_get_bblpm_en_stat(void)
 {
