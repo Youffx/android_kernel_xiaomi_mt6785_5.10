@@ -315,4 +315,10 @@ make rosemary_defconfig
 make -j$(nproc)
 ```
 
-Output: `vmlinux` (ELF) + `arch/arm64/boot/Image.gz` + `arch/arm64/boot/dts/mediatek/mt6785.dtb` + `arch/arm64/boot/dts/mediatek/rosemary.dtbo`
+Output: `vmlinux` (ELF) + `arch/arm64/boot/Image.gz` + `arch/arm64/boot/Image.gz-dtb` (kernel + board DTB) + `arch/arm64/boot/dts/mediatek/mt6785.dtb` + `arch/arm64/boot/dts/mediatek/rosemary.dtb`
+
+### Image.gz-dtb (for AnyKernel)
+
+```bash
+cat arch/arm64/boot/Image.gz arch/arm64/boot/dts/mediatek/rosemary.dtb > arch/arm64/boot/Image.gz-dtb
+```
