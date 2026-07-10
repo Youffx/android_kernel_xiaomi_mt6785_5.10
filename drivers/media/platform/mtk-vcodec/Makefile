@@ -59,6 +59,8 @@ endif
 # V2 is default when neither V1 nor V2 is selected via Kconfig,
 # but CONFIG_VIDEO_MEDIATEK_VCODEC_V2 should be set explicitly.
 
+MTK_PLATFORM := $(subst ",,$(CONFIG_MTK_PLATFORM))
+
 subdir-ccflags-y += -Wno-error
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-vcu
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-vcodec
