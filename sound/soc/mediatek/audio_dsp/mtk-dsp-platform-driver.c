@@ -1377,7 +1377,7 @@ static int mtk_dsp_probe(struct snd_soc_component *component)
 	for (id = 0; id < AUDIO_TASK_DAI_NUM; id++) {
 		spin_lock_init(&dsp->dsp_mem[id].ringbuf_lock);
 		ret = audio_task_register_callback(get_dspscene_by_dspdaiid(id),
-						   mtk_dsp_pcm_ipi_recv);
+						   mtk_dsp_pcm_ipi_recv, NULL);
 		if (ret < 0)
 			return ret;
 	}
