@@ -4,7 +4,7 @@
 **SoC:** MediaTek MT6785 (Helio G95)  
 **Device:** Xiaomi Redmi Note 10S / POCO M5s (codename: rosemary)  
 **Reference kernel:** `4.19` (stock)  
-**Compilation:** ✅ **vmlinux builds cleanly** — GCC 13.3.0 & Clang 18 — 14 fix commits on dev-test
+**Compilation:** ✅ **vmlinux builds cleanly** — GCC 13.3.0 & Clang 18
 
 ---
 
@@ -266,34 +266,6 @@ Audit compares `kernel_rosemary_5.10` against the stock `kernel_rosemary_4.19` t
 
 ---
 
-## Resolved Items
-
-Items ported from 4.19 to 5.10:
-
-| Component | Location | Lines | Verdict |
-|-----------|----------|-------|---------|
-| RTC (MT6358/MT6359) | `drivers/rtc/rtc-mt6358.c` + DTS | ~1300 | Working (alarms deferred - no PMIC IRQ domain) |
-| Pseudo M4U IOMMU | `drivers/misc/mediatek/pseudo_m4u/` | ~10400 | Ported for MT6785 (v2 path) |
-| Thermal zone monitors | `drivers/misc/mediatek/thermal/common/thermal_zones/` | ~35900 | 14 virtual sensor drivers |
-| Leakage table | `arch/arm64/boot/dts/mediatek/mt6785.dts` | ~60 | DT node with 11 power domains |
-
-Defconfig items enabled:
-
-| Config | Purpose |
-|--------|---------|
-| `WATCHDOG`, `MEDIATEK_WATCHDOG` | Watchdog driver |
-| `RANDOMIZE_BASE` | KASLR security |
-| `MFD_MT6360` | MT6360 sub-PMIC MFD |
-| `CHARGER_MT6360` | MT6360 charger |
-| `REGULATOR_MT6360` | MT6360 PMIC/LDO regulators |
-| `MTK_FLASHLIGHT_PT`, `MTK_FLASHLIGHT_PT_STRICT` | Flashlight (PT) |
-| `SND_USB_AUDIO` | USB audio |
-| `MTK_VOW_BARGE_IN_SUPPORT` | Voice wake barge-in |
-| `USB_OTG` | USB OTG host mode |
-| `CPU_FREQ_DEFAULT_GOV_SCHEDUTIL` | Power-efficient CPU governor |
-| `RTC_CLASS`, `RTC_SYSTOHC`, `RTC_DRV_MT6358` | RTC framework |
-| `USB_CONFIGFS_F_HID` | USB HID gadget |
-
 ## Known Gaps (Cannot Fix)
 
 These items were present in 4.19 but cannot be replicated in 5.10:
@@ -317,20 +289,6 @@ These items were present in 4.19 but cannot be replicated in 5.10:
 | ❌ | Missing from 5.10, needs porting or functionality impaired |
 | Δ | Kconfig name changed, functionally equivalent |
 | ↻ | Restructured — replaced by modern framework equivalent |
-
----
-
-## Summary
-
-| Category | Count |
-|----------|-------|
-| ❌ Truly missing (must be ported from 4.19) | **0** — all ported |
-| ⚠️ Kconfig gap (cannot fix in 5.10) | **6** — upstream Kconfig removed |
-| ↻ Restructured (different framework, same function) | **10** |
-| Δ Kconfig name change (functionally equivalent) | **2** |
-| ✅ Equivalent or improved in 5.10 | **~40+** |
-
-**Approximately ~100% feature complete** relative to stock 4.19 kernel. Known gaps are due to Kconfig options removed from the upstream kernel or dependencies on unavailable MFD drivers.
 
 ---
 
@@ -362,24 +320,3 @@ make -j$(nproc)
 ```
 
 Output: `vmlinux` (ELF) + `arch/arm64/boot/Image.gz` + `arch/arm64/boot/dts/mediatek/mt6785.dtb` + `arch/arm64/boot/dts/mediatek/rosemary.dtbo`
-
-### Compilation Fixes
-
-13 commits on `dev-test` to resolve build errors when porting MTK vendor drivers from 4.19 to 5.10:
-
-| # | Fix |
-|---|-----|
-| 1 | LPM module includes: local headers use `""` instead of `<>`; added `-I` to Makefile |
-| 2 | LPM Makefile: replaced undefined `MTK_LPM_PLATFORM_VERSION` with correct macro |
-| 3 | pseudo_m4u: added include path; guarded duplicate struct with `#ifndef` |
-| 4 | Audio DSP/SCP: added missing 3rd arg to `audio_task_register_callback` |
-| 5 | Touchscreen ft3418: ported `fw_sample.i` from 4.19 |
-| 6 | mtk-vcodec: defined `MTK_PLATFORM`; added pseudo_m4u + smi include paths |
-| 7 | clkbuf: fixed include ordering to prevent header collision |
-| 8 | clkbuf: fixed `_clk_buf_get_bblpm_en` return type mismatch |
-| 9 | Top mediatek Makefile: added subdir-ccflags-y for mach/ platform includes |
-| 10 | Top mediatek Makefile: added subdir-ccflags-y for pmic includes |
-| 11 | vcodec: fixed `M4U_PORT` macro name for mt6785 |
-| 12 | eem: fixed regulator include path, mcdi headers ported |
-| 13 | Bulk fix: eem implicit declarations, vow callback, `do_gettimeofday` → `ktime_get_real_ts64`, met/audio/scp compat stubs, clkbuf gating, vmlinux.lds assert relaxation |
-| 14 | compat_stubs: fix `adaptive_cooler_name` type mismatch (function → variable) for Clang link |
