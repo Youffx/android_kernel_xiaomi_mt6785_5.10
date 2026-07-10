@@ -18,7 +18,7 @@
 #include <linux/regulator/machine.h>
 #include <linux/regulator/consumer.h>
 
-#include "include/pmic.h"
+#include "pmic.h"
 
 #define REGULATOR_READY
 
