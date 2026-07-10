@@ -261,12 +261,11 @@ static int mtk_mdm_value_open(struct inode *inode, struct file *file)
 	return single_open(file, mtk_mdm_value_read, NULL);
 }
 
-static const struct file_operations mtk_mdm_value_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_mdm_value_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mtk_mdm_value_fops = {
+		.proc_open = mtk_mdm_value_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 static int mtk_mdm_sw_read(struct seq_file *m, void *v)
@@ -333,13 +332,12 @@ static int mtk_mdm_sw_open(struct inode *inode, struct file *file)
 	return single_open(file, mtk_mdm_sw_read, NULL);
 }
 
-static const struct file_operations mtk_mdm_sw_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_mdm_sw_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtk_mdm_sw_write,
-	.release = single_release,
+static const struct proc_ops mtk_mdm_sw_fops = {
+		.proc_open = mtk_mdm_sw_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtk_mdm_sw_write,
+	.proc_release = single_release,
 };
 
 static int mtk_mdm_proc_timeout_read(struct seq_file *m, void *v)
@@ -376,13 +374,12 @@ static int mtk_mdm_proc_timeout_open(struct inode *inode, struct file *file)
 	return single_open(file, mtk_mdm_proc_timeout_read, NULL);
 }
 
-static const struct file_operations mtk_mdm_proc_timeout_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_mdm_proc_timeout_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtk_mdm_proc_timeout_write,
-	.release = single_release,
+static const struct proc_ops mtk_mdm_proc_timeout_fops = {
+		.proc_open = mtk_mdm_proc_timeout_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtk_mdm_proc_timeout_write,
+	.proc_release = single_release,
 };
 
 #if MTK_TS_PA_THPUT_VIA_ATCMD == 1
@@ -450,13 +447,12 @@ static int mtk_mdm_proc_mdinfo_open(struct inode *inode, struct file *file)
 	return single_open(file, mtk_mdm_proc_mdinfo_read, NULL);
 }
 
-static const struct file_operations mtk_mdm_proc_mdinfo_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_mdm_proc_mdinfo_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtk_mdm_proc_mdinfo_write,
-	.release = single_release,
+static const struct proc_ops mtk_mdm_proc_mdinfo_fops = {
+		.proc_open = mtk_mdm_proc_mdinfo_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtk_mdm_proc_mdinfo_write,
+	.proc_release = single_release,
 };
 
 static int mtk_mdm_proc_mdinfoex_read(struct seq_file *m, void *v)
@@ -506,13 +502,12 @@ static int mtk_mdm_proc_mdinfoex_open(struct inode *inode, struct file *file)
 	return single_open(file, mtk_mdm_proc_mdinfoex_read, NULL);
 }
 
-static const struct file_operations mtk_mdm_proc_mdinfoex_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_mdm_proc_mdinfoex_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtk_mdm_proc_mdinfoex_write,
-	.release = single_release,
+static const struct proc_ops mtk_mdm_proc_mdinfoex_fops = {
+		.proc_open = mtk_mdm_proc_mdinfoex_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtk_mdm_proc_mdinfoex_write,
+	.proc_release = single_release,
 };
 
 static int mtk_mdm_proc_mdinfoex_threshold_read(struct seq_file *m, void *v)
@@ -534,12 +529,11 @@ struct inode *inode, struct file *file)
 	return single_open(file, mtk_mdm_proc_mdinfoex_threshold_read, NULL);
 }
 
-static const struct file_operations mtk_mdm_proc_mdinfoex_threshold_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_mdm_proc_mdinfoex_threshold_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mtk_mdm_proc_mdinfoex_threshold_fops = {
+		.proc_open = mtk_mdm_proc_mdinfoex_threshold_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 

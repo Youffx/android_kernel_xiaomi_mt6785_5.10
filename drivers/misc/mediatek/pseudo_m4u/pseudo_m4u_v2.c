@@ -29,9 +29,10 @@
 #include <mach/pseudo_m4u_plat.h>
 #include <linux/pagemap.h>
 #include <linux/compat.h>
+#include <linux/miscdevice.h>
 #include <linux/sched/signal.h>
 #include <linux/sched/clock.h>
-#include <asm/dma-iommu.h>
+
 #include <sync_write.h>
 #include "smi_public.h"
 #ifdef CONFIG_MTK_IOMMU_V2
@@ -707,6 +708,7 @@ static phys_addr_t m4u_user_v2p(unsigned long va)
 {
 	unsigned long pageOffset = (va & (M4U_PAGE_SIZE - 1));
 	pgd_t *pgd;
+	p4d_t *p4d;
 	pud_t *pud;
 	pmd_t *pmd;
 	pte_t *pte;
@@ -729,7 +731,13 @@ static phys_addr_t m4u_user_v2p(unsigned long va)
 		return 0;
 	}
 
-	pud = pud_offset(pgd, va);
+	p4d = p4d_offset(pgd, va);
+	if (p4d_none(*p4d) || p4d_bad(*p4d)) {
+		M4U_DBG("%s va=0x%lx, err p4d\n", __func__, va);
+		return 0;
+	}
+
+	pud = pud_offset(p4d, va);
 	if (pud_none(*pud) || pud_bad(*pud)) {
 		M4U_DBG("%s va=0x%lx, err pud\n", __func__, va);
 		return 0;
@@ -855,7 +863,8 @@ int __m4u_get_user_pages(int eModuleID, struct task_struct *tsk,
 					handle_mm_fault(vma, start,
 							(foll_flags &
 							 FOLL_WRITE) ?
-							 FAULT_FLAG_WRITE : 0);
+							 FAULT_FLAG_WRITE : 0,
+							0);
 
 				if (ret & VM_FAULT_ERROR) {
 					if (ret & VM_FAULT_OOM) {
@@ -1019,7 +1028,8 @@ static int m4u_get_pages(int eModuleID, unsigned long BufAddr,
 						(va_next <= vma->vm_end)) {
 						handle_mm_fault(vma,
 								va_next,
-								flags);
+								flags,
+								0);
 						cond_resched();
 					} else
 						break;
@@ -1868,13 +1878,13 @@ int pseudo_alloc_mva_sg(struct port_mva_info_t *port_info,
 	/* align the va to allocate continues iova. */
 	offset = m4u_va_align(&va_align, &size_align);
 
-	ret = __pseudo_alloc_mva(client, port_info->emoduleid,
+	ret = __pseudo_alloc_mva(client, port_info->module_id,
 				  va_align, size_align,
 				  sg_table, flags, &mva_align);
 	if (ret) {
 		M4U_ERR(
 			"error alloc mva: port %d, 0x%x, 0x%lx, 0x%lx, 0x%lx, ret=%d\n",
-			port_info->emoduleid, flags, port_info->va,
+			port_info->module_id, flags, port_info->va,
 			mva_align, port_info->buf_size, ret);
 		mva = 0;
 		return ret;
@@ -1885,7 +1895,7 @@ int pseudo_alloc_mva_sg(struct port_mva_info_t *port_info,
 
 #if 0
 	M4U_MSG("%s:port(%d), flags(%d), va(0x%lx), mva=0x%x, size 0x%x\n",
-		__func__, port_info->emoduleid, flags,
+		__func__, port_info->module_id, flags,
 		port_info->va, mva, port_info->buf_size);
 #endif
 
@@ -2157,7 +2167,8 @@ static int m4u_fill_sgtable_user(struct vm_area_struct *vma,
 					handle_mm_fault(vma, va_tmp,
 							(vma->vm_flags &
 							 VM_WRITE) ?
-							FAULT_FLAG_WRITE : 0);
+							FAULT_FLAG_WRITE : 0,
+							0);
 				}
 			}
 
@@ -3497,11 +3508,14 @@ static int pseudo_probe(struct platform_device *pdev)
 		M4U_MSG("kmalloc for m4u_device fail\n");
 		return -ENOMEM;
 	}
-	pseudo_mmu_dev->m4u_dev_proc_entry = proc_create("m4u", 0000, NULL,
-							 &pseudo_fops);
-	if (!pseudo_mmu_dev->m4u_dev_proc_entry) {
-		M4U_ERR("proc m4u create error\n");
-		return -ENODEV;
+	pseudo_mmu_dev->m4u_misc_dev.minor = MISC_DYNAMIC_MINOR;
+	pseudo_mmu_dev->m4u_misc_dev.name = "m4u";
+	pseudo_mmu_dev->m4u_misc_dev.fops = &pseudo_fops;
+	ret = misc_register(&pseudo_mmu_dev->m4u_misc_dev);
+	if (ret) {
+		M4U_ERR("misc m4u register error %d\n", ret);
+		kfree(pseudo_mmu_dev);
+		return ret;
 	}
 	pseudo_debug_init(pseudo_mmu_dev);
 
@@ -3757,8 +3771,7 @@ int pseudo_m4u_sec_init(int mtk_iommu_sec_id)
 
 static int pseudo_remove(struct platform_device *pdev)
 {
-	if (pseudo_mmu_dev->m4u_dev_proc_entry)
-		proc_remove(pseudo_mmu_dev->m4u_dev_proc_entry);
+	misc_deregister(&pseudo_mmu_dev->m4u_misc_dev);
 	pseudo_put_m4u_client();
 	M4U_MSG("client user count:%ld\n", ion_m4u_client->count);
 	pseudo_destroy_client(ion_m4u_client);

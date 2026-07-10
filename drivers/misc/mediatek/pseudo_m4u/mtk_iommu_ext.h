@@ -5,6 +5,10 @@
 
 #ifndef _MTK_IOMMU_EXT_H_
 #define _MTK_IOMMU_EXT_H_
+
+#ifndef CONFIG_MTK_IOMMU_PGTABLE_EXT
+#define CONFIG_MTK_IOMMU_PGTABLE_EXT 32
+#endif
 #include <linux/io.h>
 #ifdef CONFIG_MTK_AEE_FEATURE
 #include <aee.h>

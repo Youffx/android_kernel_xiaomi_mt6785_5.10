@@ -226,8 +226,6 @@ static struct thermal_zone_device_ops mtktspmic_dev_ops = {
 	.bind = mtktspmic_bind,
 	.unbind = mtktspmic_unbind,
 	.get_temp = mtktspmic_get_temp,
-	.get_mode = mtktspmic_get_mode,
-	.set_mode = mtktspmic_set_mode,
 	.get_trip_type = mtktspmic_get_trip_type,
 	.get_trip_temp = mtktspmic_get_trip_temp,
 	.get_crit_temp = mtktspmic_get_crit_temp,
@@ -553,13 +551,12 @@ static int mtktspmic_open(struct inode *inode, struct file *file)
 	return single_open(file, mtktspmic_read, NULL);
 }
 
-static const struct file_operations mtktspmic_fops = {
-	.owner = THIS_MODULE,
-	.open = mtktspmic_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtktspmic_write,
-	.release = single_release,
+static const struct proc_ops mtktspmic_fops = {
+		.proc_open = mtktspmic_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtktspmic_write,
+	.proc_release = single_release,
 };
 
 
@@ -602,13 +599,12 @@ static int mtktspmic_open_log(struct inode *inode, struct file *file)
 	return single_open(file, mtktspmic_read_log, NULL);
 }
 
-static const struct file_operations mtktspmic_log_fops = {
-	.owner = THIS_MODULE,
-	.open = mtktspmic_open_log,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtktspmic_write_log,
-	.release = single_release,
+static const struct proc_ops mtktspmic_log_fops = {
+		.proc_open = mtktspmic_open_log,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtktspmic_write_log,
+	.proc_release = single_release,
 };
 
 static int mtktspmic_read_ate(struct seq_file *m, void *v)
@@ -658,13 +654,12 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 	return -EINVAL;
 }
 
-static const struct file_operations mtktspmic_ate_fops = {
-	.owner = THIS_MODULE,
-	.open = mtktspmic_open_ate,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtktspmic_write_ate,
-	.release = single_release,
+static const struct proc_ops mtktspmic_ate_fops = {
+		.proc_open = mtktspmic_open_ate,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtktspmic_write_ate,
+	.proc_release = single_release,
 };
 static int mtk_ts_pmic_probe(struct platform_device *pdev)
 {

@@ -335,11 +335,20 @@ These items were present in 4.19 but cannot be replicated in 5.10:
 
 ## Build
 
+### Prerequisites
+
+- **Clang 18+** (`clang-18`)
+- **aarch64-linux-gnu binutils** (for linker, objcopy, etc.)
+
+### Build
+
 ```bash
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
-make rosemary_defconfig
-make -j$(nproc)
+export CC=clang-18
+export CLANG_TRIPLE=aarch64-linux-gnu-
+make O=out rosemary_defconfig
+make O=out -j$(nproc)
 ```
 
-Output: `arch/arm64/boot/Image.gz` + `arch/arm64/boot/dts/mediatek/mt6785.dtb` + `arch/arm64/boot/dts/mediatek/rosemary.dtbo`
+Output: `out/arch/arm64/boot/Image.gz` + `out/arch/arm64/boot/dts/mediatek/mt6785.dtb` + `out/arch/arm64/boot/dts/mediatek/rosemary.dtbo`

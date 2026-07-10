@@ -13,6 +13,7 @@
 
 #include <linux/ioctl.h>
 #include <linux/fs.h>
+#include <linux/miscdevice.h>
 #if IS_ENABLED(CONFIG_DEBUG_FS)
 #include <linux/debugfs.h>
 #endif
@@ -128,6 +129,7 @@ struct m4u_client_t {
 	pid_t open_pid;
 	pid_t open_tgid;
 	struct list_head mvaList;
+	long count;
 };
 
 struct port_mva_info_t {
@@ -152,18 +154,17 @@ static int __fops ## _open(struct inode *inode, struct file *file)	  \
 	__simple_attr_check_format(__fmt, 0ull);			  \
 	return simple_attr_open(&local_inode, file, __get, __set, __fmt); \
 }									  \
-static const struct file_operations __fops = {				  \
-	.owner	 = THIS_MODULE,						  \
-	.open	 = __fops ## _open,					  \
-	.release = simple_attr_release,					  \
-	.read	 = simple_attr_read,					  \
-	.write	 = simple_attr_write,					  \
-	.llseek	 = generic_file_llseek,					  \
+static const struct proc_ops __fops = {					  \
+	.proc_open	 = __fops ## _open,				  \
+	.proc_release	 = simple_attr_release,				  \
+	.proc_read	 = simple_attr_read,				  \
+	.proc_write	 = simple_attr_write,				  \
+	.proc_lseek	 = generic_file_llseek,				  \
 }
 #endif
 
 struct m4u_device {
-	struct proc_dir_entry *m4u_dev_proc_entry;
+	struct miscdevice m4u_misc_dev;
 #if IS_ENABLED(CONFIG_DEBUG_FS)
 	struct dentry *debug_root;
 #endif
@@ -201,7 +202,8 @@ int m4u_alloc_mva_sg(struct port_mva_info_t *port_info,
 		     struct sg_table *sg_table);
 
 int m4u_mva_map_kernel(unsigned long mva, unsigned long size,
-		       unsigned long *map_va, unsigned long *map_size);
+		       unsigned long *map_va, unsigned long *map_size,
+		       struct sg_table *table);
 int m4u_mva_unmap_kernel(unsigned long mva, unsigned long size,
 		       unsigned long va);
 #ifndef IOVA_PFN
@@ -274,10 +276,10 @@ int pseudo_get_iova_space(int port,
 		struct list_head *list);
 void pseudo_put_iova_space(int port,
 		struct list_head *list);
-void m4u_dump_pgtable(unsigned int level);
+void m4u_dump_pgtable(unsigned int level, unsigned long target);
 void __m4u_dump_pgtable(struct seq_file *s, unsigned int level,
-		bool lock);
-int pseudo_dump_port(int port);
+		bool lock, unsigned long target);
+int pseudo_dump_port(int port, bool ignore_power);
 int pseudo_dump_all_port_status(struct seq_file *s);
 int pseudo_dump_iova_reserved_region(struct seq_file *s);
 

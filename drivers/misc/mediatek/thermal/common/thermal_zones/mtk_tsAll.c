@@ -278,8 +278,6 @@ static struct thermal_zone_device_ops tsallts_dev_ops = {
 	.bind = tsallts_bind,
 	.unbind = tsallts_unbind,
 	.get_temp = tsallts_get_temp,
-	.get_mode = tsallts_get_mode,
-	.set_mode = tsallts_set_mode,
 	.get_trip_type = tsallts_get_trip_type,
 	.get_trip_temp = tsallts_get_trip_temp,
 	.get_crit_temp = tsallts_get_crit_temp,
@@ -449,7 +447,7 @@ struct inode *inode, struct file *file)	\
 	return single_open(file, tz ## num ## _proc_read,	\
 			PDE_DATA(inode));	\
 }	\
-static const struct file_operations tz ## num ## _proc_fops = {	\
+static const struct proc_ops tz ## num ## _proc_fops = {	\
 	.owner          = THIS_MODULE,	\
 	.open           = tz ## num ## _proc_open,	\
 	.read           = seq_read,	\
@@ -482,7 +480,7 @@ PROC_FOPS_RW(19);
 PROC_FOPS_RW(20);
 PROC_FOPS_RW(21);
 
-static const struct file_operations *thz_fops[RESERVED_TZS] = {
+static const struct proc_ops *thz_fops[RESERVED_TZS] = {
 	FOPS(1),
 	FOPS(2),
 	FOPS(3),
@@ -577,13 +575,12 @@ static int thz_enable_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, thz_enable_read, NULL);
 }
-static const struct file_operations thz_enable_fops = {
-	.owner = THIS_MODULE,
-	.open = thz_enable_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = thz_enable_write,
-	.release = single_release,
+static const struct proc_ops thz_enable_fops = {
+		.proc_open = thz_enable_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = thz_enable_write,
+	.proc_release = single_release,
 };
 static int clnothings_get_index(struct thermal_cooling_device *cdev)
 {

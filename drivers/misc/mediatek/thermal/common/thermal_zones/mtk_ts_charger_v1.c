@@ -317,8 +317,6 @@ static struct thermal_zone_device_ops mtktscharger_dev_ops = {
 	.bind = mtktscharger_bind,
 	.unbind = mtktscharger_unbind,
 	.get_temp = mtktscharger_get_temp,
-	.get_mode = mtktscharger_get_mode,
-	.set_mode = mtktscharger_set_mode,
 	.get_trip_type = mtktscharger_get_trip_type,
 	.get_trip_temp = mtktscharger_get_trip_temp,
 	.get_crit_temp = mtktscharger_get_crit_temp,
@@ -575,13 +573,12 @@ static int mtktscharger_open(struct inode *inode, struct file *file)
 	return single_open(file, mtktscharger_read, NULL);
 }
 
-static const struct file_operations mtktscharger_fops = {
-	.owner = THIS_MODULE,
-	.open = mtktscharger_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtktscharger_write,
-	.release = single_release,
+static const struct proc_ops mtktscharger_fops = {
+		.proc_open = mtktscharger_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtktscharger_write,
+	.proc_release = single_release,
 };
 
 #if (CONFIG_MTK_GAUGE_VERSION == 30)

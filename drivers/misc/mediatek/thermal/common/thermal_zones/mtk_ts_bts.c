@@ -875,8 +875,6 @@ static struct thermal_zone_device_ops mtkts_BTS_dev_ops = {
 	.bind = mtkts_bts_bind,
 	.unbind = mtkts_bts_unbind,
 	.get_temp = mtkts_bts_get_temp,
-	.get_mode = mtkts_bts_get_mode,
-	.set_mode = mtkts_bts_set_mode,
 	.get_trip_type = mtkts_bts_get_trip_type,
 	.get_trip_temp = mtkts_bts_get_trip_temp,
 	.get_crit_temp = mtkts_bts_get_crit_temp,
@@ -1311,13 +1309,12 @@ static int mtkts_bts_open(struct inode *inode, struct file *file)
 	return single_open(file, mtkts_bts_read, NULL);
 }
 
-static const struct file_operations mtkts_AP_fops = {
-	.owner = THIS_MODULE,
-	.open = mtkts_bts_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtkts_bts_write,
-	.release = single_release,
+static const struct proc_ops mtkts_AP_fops = {
+		.proc_open = mtkts_bts_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtkts_bts_write,
+	.proc_release = single_release,
 };
 
 
@@ -1326,13 +1323,12 @@ static int mtkts_bts_param_open(struct inode *inode, struct file *file)
 	return single_open(file, mtkts_bts_param_read, NULL);
 }
 
-static const struct file_operations mtkts_AP_param_fops = {
-	.owner = THIS_MODULE,
-	.open = mtkts_bts_param_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtkts_bts_param_write,
-	.release = single_release,
+static const struct proc_ops mtkts_AP_param_fops = {
+		.proc_open = mtkts_bts_param_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtkts_bts_param_write,
+	.proc_release = single_release,
 };
 
 #if defined(CONFIG_MEDIATEK_MT6577_AUXADC)

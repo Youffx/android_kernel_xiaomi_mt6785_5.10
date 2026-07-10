@@ -128,12 +128,12 @@ int tspa_get_MD_tx_tput(void)
 static void pa_cal_stats(struct timer_list *t)
 {
 	struct pa_stats *stats_info = &pa_stats_info;
-	struct timeval cur_time;
+	struct timespec64 cur_time;
 
 	mtktspa_dprintk("[%s] pre_time=%lu, pre_data=%lu\n", __func__,
 					pre_time, stats_info->pre_tx_bytes);
 
-	do_gettimeofday(&cur_time);
+	ktime_get_real_ts64(&cur_time);
 
 	if (pre_time != 0 && cur_time.tv_sec > pre_time) {
 		unsigned long tx_bytes = get_tx_bytes();
@@ -193,10 +193,10 @@ static void pa_cal_stats(struct timer_list *t)
  *struct md_info g_pinfo_list[] =
  *{{"TXPWR_MD1", -127, "db", -127, 0},
  * {"TXPWR_MD2", -127, "db", -127, 1},
- * {"RFTEMP_2G_MD1", -32767, "¢XC", -32767, 2},
- * {"RFTEMP_2G_MD2", -32767, "¢XC", -32767, 3},
- * {"RFTEMP_3G_MD1", -32767, "¢XC", -32767, 4},
- * {"RFTEMP_3G_MD2", -32767, "¢XC", -32767, 5}};
+ * {"RFTEMP_2G_MD1", -32767, "XC", -32767, 2},
+ * {"RFTEMP_2G_MD2", -32767, "XC", -32767, 3},
+ * {"RFTEMP_3G_MD1", -32767, "XC", -32767, 4},
+ * {"RFTEMP_3G_MD2", -32767, "XC", -32767, 5}};
  */
 static DEFINE_MUTEX(TSPA_lock);
 static int mtktspa_get_hw_temp(void)
@@ -389,8 +389,6 @@ static struct thermal_zone_device_ops mtktspa_dev_ops = {
 	.bind = mtktspa_bind,
 	.unbind = mtktspa_unbind,
 	.get_temp = mtktspa_get_temp,
-	.get_mode = mtktspa_get_mode,
-	.set_mode = mtktspa_set_mode,
 	.get_trip_type = mtktspa_get_trip_type,
 	.get_trip_temp = mtktspa_get_trip_temp,
 	.get_crit_temp = mtktspa_get_crit_temp,
@@ -640,13 +638,12 @@ static int mtktspa_open(struct inode *inode, struct file *file)
 	return single_open(file, mtktspa_read, NULL);
 }
 
-static const struct file_operations mtktspa_fops = {
-	.owner = THIS_MODULE,
-	.open = mtktspa_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtktspa_write,
-	.release = single_release,
+static const struct proc_ops mtktspa_fops = {
+		.proc_open = mtktspa_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtktspa_write,
+	.proc_release = single_release,
 };
 
 #if Feature_Thro_update
@@ -663,12 +660,11 @@ static int pa_mobile_tx_thro_open(struct inode *inode, struct file *file)
 	return single_open(file, pa_mobile_tx_thro_read, PDE_DATA(inode));
 }
 
-static const struct file_operations _tx_thro_fops = {
-	.owner = THIS_MODULE,
-	.open = pa_mobile_tx_thro_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops _tx_thro_fops = {
+		.proc_open = pa_mobile_tx_thro_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 

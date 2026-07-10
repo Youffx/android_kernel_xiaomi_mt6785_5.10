@@ -21,7 +21,6 @@
 #include "mtk_thermal_timer.h"
 #include <linux/uidgid.h>
 #include <linux/slab.h>
-#include "kd_camera_feature.h"
 #include "kd_imgsensor_define.h"
 #include "kd_imgsensor_api.h"
 
@@ -175,13 +174,12 @@ static int mtk_imgs_open_log(struct inode *inode, struct file *file)
 	return single_open(file, mtk_imgs_read_log, NULL);
 }
 
-static const struct file_operations mtk_imgs_log_fops = {
-	.owner = THIS_MODULE,
-	.open = mtk_imgs_open_log,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtk_imgs_write_log,
-	.release = single_release,
+static const struct proc_ops mtk_imgs_log_fops = {
+		.proc_open = mtk_imgs_open_log,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtk_imgs_write_log,
+	.proc_release = single_release,
 };
 /*=============================================================
  * Image sensor on/off status
@@ -510,8 +508,6 @@ static struct thermal_zone_device_ops mtk_imgs_dev_ops = {
 	.bind = mtk_imgs_bind,
 	.unbind = mtk_imgs_unbind,
 	.get_temp = mtk_imgs_get_temp,
-	.get_mode = mtk_imgs_get_mode,
-	.set_mode = mtk_imgs_set_mode,
 	.get_trip_type = mtk_imgs_get_trip_type,
 	.get_trip_temp = mtk_imgs_get_trip_temp,
 	.get_crit_temp = mtk_imgs_get_crit_temp,
@@ -686,13 +682,12 @@ struct inode *inode, struct file *file)	\
 	return single_open(file, tz ## num ## _proc_read,	\
 			PDE_DATA(inode));	\
 }	\
-static const struct file_operations tz ## num ## _proc_fops = {	\
-	.owner          = THIS_MODULE,	\
-	.open           = tz ## num ## _proc_open,	\
-	.read           = seq_read,	\
-	.llseek         = seq_lseek,	\
-	.release        = single_release,	\
-	.write          = tz ## num ## _proc_write,	\
+static const struct proc_ops tz ## num ## _proc_fops = {	\
+	.proc_open      = tz ## num ## _proc_open,	\
+	.proc_read      = seq_read,	\
+	.proc_lseek     = seq_lseek,	\
+	.proc_release   = single_release,	\
+	.proc_write     = tz ## num ## _proc_write,	\
 }
 
 #define FOPS(num)	(&tz ## num ## _proc_fops)
@@ -718,7 +713,7 @@ PROC_FOPS_RW(17);
 PROC_FOPS_RW(18);
 PROC_FOPS_RW(19);
 
-static const struct file_operations *thz_fops[RESERVED_TZS] = {
+static const struct proc_ops *thz_fops[RESERVED_TZS] = {
 	FOPS(0),
 	FOPS(1),
 	FOPS(2),

@@ -233,7 +233,7 @@ static int wmt_send_signal(int level)
 	}
 
 	if (ret == 0 && pg_task) {
-		siginfo_t info;
+		struct kernel_siginfo info;
 
 		info.si_signo = SIGIO;
 		info.si_code = 4;
@@ -477,12 +477,12 @@ int tswmt_get_WiFi_tx_tput(void)
 static void wmt_cal_stats(struct timer_list *t)
 {
 	struct wmt_stats *stats_info = &wmt_stats_info;
-	struct timeval cur_time;
+	struct timespec64 cur_time;
 
 	wmt_tm_dprintk("[%s] pre_time=%lu, pre_data=%lu\n", __func__, pre_time,
 		       stats_info->pre_tx_bytes);
 
-	do_gettimeofday(&cur_time);
+	ktime_get_real_ts64(&cur_time);
 
 	if (pre_time != 0 && cur_time.tv_sec > pre_time) {
 		unsigned long tx_bytes = get_tx_bytes();
@@ -1581,8 +1581,6 @@ static struct thermal_zone_device_ops wmt_thz_dev_ops = {
 	.bind = wmt_thz_bind,
 	.unbind = wmt_thz_unbind,
 	.get_temp = wmt_thz_get_temp,
-	.get_mode = wmt_thz_get_mode,
-	.set_mode = wmt_thz_set_mode,
 	.get_trip_type = wmt_thz_get_trip_type,
 	.get_trip_temp = wmt_thz_get_trip_temp,
 	.get_crit_temp = wmt_thz_get_crit_temp,
@@ -1878,65 +1876,58 @@ struct file *filp, const char __user *buf, size_t count, loff_t *data)
 	return -EINVAL;
 }
 
-static const struct file_operations _wmt_tm_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_tm_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = wmt_tm_write,
-	.release = single_release,
+static const struct proc_ops _wmt_tm_fops = {
+		.proc_open = wmt_tm_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = wmt_tm_write,
+	.proc_release = single_release,
 };
 
-static const struct file_operations _tm_pid_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_tm_pid_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = wmt_tm_pid_write,
-	.release = single_release,
+static const struct proc_ops _tm_pid_fops = {
+		.proc_open = wmt_tm_pid_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = wmt_tm_pid_write,
+	.proc_release = single_release,
 };
 
-static const struct file_operations _wmt_val_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_wifi_algo_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = wmt_wifi_algo_write,
-	.release = single_release,
+static const struct proc_ops _wmt_val_fops = {
+		.proc_open = wmt_wifi_algo_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = wmt_wifi_algo_write,
+	.proc_release = single_release,
 };
 
-static const struct file_operations _tx_thro_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_wifi_tx_thro_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops _tx_thro_fops = {
+		.proc_open = wmt_wifi_tx_thro_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
-static const struct file_operations _tx_thro_limit_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_wifi_tx_thro_limit_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops _tx_thro_limit_fops = {
+		.proc_open = wmt_wifi_tx_thro_limit_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
-static const struct file_operations _wfd_stat_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_tm_wfd_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = wmt_tm_wfd_write,
-	.release = single_release,
+static const struct proc_ops _wfd_stat_fops = {
+		.proc_open = wmt_tm_wfd_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = wmt_tm_wfd_write,
+	.proc_release = single_release,
 };
 
-static const struct file_operations _wifi_in_soc_fops = {
-	.owner = THIS_MODULE,
-	.open = wmt_wifi_in_soc_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = wmt_wifi_in_soc_write,
-	.release = single_release,
+static const struct proc_ops _wifi_in_soc_fops = {
+		.proc_open = wmt_wifi_in_soc_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = wmt_wifi_in_soc_write,
+	.proc_release = single_release,
 };
 
 static int wmt_tm_proc_register(void)

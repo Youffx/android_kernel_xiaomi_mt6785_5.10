@@ -364,8 +364,6 @@ static struct thermal_zone_device_ops mtktsbattery_dev_ops = {
 	.bind = mtktsbattery_bind,
 	.unbind = mtktsbattery_unbind,
 	.get_temp = mtktsbattery_get_temp,
-	.get_mode = mtktsbattery_get_mode,
-	.set_mode = mtktsbattery_set_mode,
 	.get_trip_type = mtktsbattery_get_trip_type,
 	.get_trip_temp = mtktsbattery_get_trip_temp,
 	.get_crit_temp = mtktsbattery_get_crit_temp,
@@ -745,13 +743,12 @@ static int mtkts_battery_open(struct inode *inode, struct file *file)
 	return single_open(file, mtktsbattery_read, NULL);
 }
 
-static const struct file_operations mtkts_battery_fops = {
-	.owner = THIS_MODULE,
-	.open = mtkts_battery_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtktsbattery_write,
-	.release = single_release,
+static const struct proc_ops mtkts_battery_fops = {
+		.proc_open = mtkts_battery_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtktsbattery_write,
+	.proc_release = single_release,
 };
 
 static int __init mtktsbattery_init(void)

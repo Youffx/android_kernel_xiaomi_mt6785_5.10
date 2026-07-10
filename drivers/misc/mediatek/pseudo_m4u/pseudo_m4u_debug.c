@@ -1,32 +1,56 @@
+
 /* SPDX-License-Identifier: GPL-2.0 */
 /*
  * Copyright (c) 2019 MediaTek Inc.
  */
 
 #include <linux/vmalloc.h>
+
 #include <linux/slab.h>
+
 #include <linux/mm.h>
+
 #include <linux/mman.h>
+
 #include <linux/module.h>
+
 #include <mach/pseudo_m4u.h>
+
+#ifndef M4U_PORT_BOUNDARY0_DEBUG
+#define M4U_PORT_BOUNDARY0_DEBUG 100
+#define M4U_PORT_BOUNDARY1_DEBUG 101
+#define M4U_PORT_BOUNDARY2_DEBUG 102
+#define M4U_PORT_BOUNDARY3_DEBUG 103
+#define M4U_PORT_APU_CODE 104
+#endif
 #include "pseudo_m4u_debug.h"
+
 #include "pseudo_m4u_log.h"
+
 #include "mtk_iommu_ext.h"
+
 
 #ifdef CONFIG_MTK_IN_HOUSE_TEE_SUPPORT
 #include "tz_cross/trustzone.h"
+
 #include "tz_cross/ta_mem.h"
+
 #include "trustzone/kree/system.h"
+
 #include "trustzone/kree/mem.h"
+
 #endif
 
 #if defined(CONFIG_MTK_LEGACY_SECMEM_SUPPORT)
 #include "secmem.h"
+
 #elif defined(CONFIG_MTK_SECURE_MEM_SUPPORT)
 #include "trusted_mem_api.h"
+
 #endif
 #ifdef M4U_GZ_SERVICE_ENABLE
 #include "tz_m4u.h"
+
 #endif
 
 #if IS_ENABLED(CONFIG_DEBUG_FS) || IS_ENABLED(CONFIG_PROC_FS)
@@ -95,15 +119,12 @@ int m4u_test_alloc_dealloc(int id, unsigned int size)
 			return -1;
 		}
 	} else if (id == 3) {
-		mmap_write_lock(current->mm);
-		va = do_mmap_pgoff(NULL, 0, size,
-			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED,
-			0, &populate, NULL);
+		va = vm_mmap(NULL, 0, size,
+			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED, 0);
 		if (!va) {
 			M4U_MSG("mmap pgoff failed!\n");
 			return -1;
 		}
-		mmap_write_unlock(current->mm);
 	}
 
 	pseudo_test_alloc_dealloc(id, va, size, NULL);
@@ -113,9 +134,7 @@ int m4u_test_alloc_dealloc(int id, unsigned int size)
 	else if (id == 2)
 		vfree((void *)va);
 	else if (id == 3) {
-		mmap_read_lock(current->mm);
-		ret = do_munmap(current->mm, va, size, NULL);
-		mmap_read_unlock(current->mm);
+		ret = vm_munmap(va, size);
 		if (ret)
 			M4U_MSG("do_munmap failed\n");
 	}
@@ -135,10 +154,8 @@ static int m4u_test_map_kernel(void)
 	int ret = 0;
 	unsigned long populate = 0;
 
-	mmap_write_lock(current->mm);
-	va = do_mmap_pgoff(NULL, 0, size,
-		PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED,
-		0, &populate, NULL);
+	va = vm_mmap(NULL, 0, size,
+		PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED, 0);
 	mmap_write_unlock(current->mm);
 
 	M4U_INFO("test va=0x%lx,size=0x%x\n", va, size);
@@ -177,9 +194,7 @@ static int m4u_test_map_kernel(void)
 	ret = m4u_mva_unmap_kernel(mva, size, kernel_va);
 
 	ret = pseudo_dealloc_mva(client, M4U_PORT_OVL_DEBUG, mva);
-	mmap_read_lock(current->mm);
-	ret = do_munmap(current->mm, va, size, NULL);
-	mmap_read_unlock(current->mm);
+	ret = vm_munmap(va, size);
 	if (ret)
 		M4U_MSG("do_munmap failed\n");
 	pseudo_put_m4u_client();
@@ -418,9 +433,13 @@ int m4u_test_tf(void)
 	return 0;
 }
 
+extern void pseudo_m4u_db_debug(unsigned int m4uid, struct seq_file *s);
+
 #if 0
 #include <mtk/mtk_ion.h>
+
 #include <ion_priv.h>
+
 
 void m4u_test_ion(void)
 {
@@ -1309,11 +1328,11 @@ int m4u_debug_help_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_help_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_help_fops = {
-	.open = m4u_debug_help_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_help_fops = {
+	.proc_open = m4u_debug_help_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1323,11 +1342,11 @@ int m4u_proc_help_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_help_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_help_fops = {
-	.open = m4u_proc_help_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_help_fops = {
+	.proc_open = m4u_proc_help_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1344,11 +1363,11 @@ int m4u_debug_domain_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_domain_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_domain_fops = {
-	.open = m4u_debug_domain_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_domain_fops = {
+	.proc_open = m4u_debug_domain_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1358,11 +1377,11 @@ int m4u_proc_domain_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_domain_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_domain_fops = {
-	.open = m4u_proc_domain_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_domain_fops = {
+	.proc_open = m4u_proc_domain_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1379,11 +1398,11 @@ int m4u_debug_port_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_port_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_port_fops = {
-	.open = m4u_debug_port_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_port_fops = {
+	.proc_open = m4u_debug_port_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1393,11 +1412,11 @@ int m4u_proc_port_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_port_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_port_fops = {
-	.open = m4u_proc_port_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_port_fops = {
+	.proc_open = m4u_proc_port_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1414,11 +1433,11 @@ int m4u_debug_buf_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_buf_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_buf_fops = {
-	.open = m4u_debug_buf_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_buf_fops = {
+	.proc_open = m4u_debug_buf_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1428,11 +1447,11 @@ int m4u_proc_buf_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_buf_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_buf_fops = {
-	.open = m4u_proc_buf_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_buf_fops = {
+	.proc_open = m4u_proc_buf_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1453,11 +1472,11 @@ int m4u_debug_monitor_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_monitor_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_monitor_fops = {
-	.open = m4u_debug_monitor_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_monitor_fops = {
+	.proc_open = m4u_debug_monitor_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1468,11 +1487,11 @@ int m4u_proc_monitor_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_monitor_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_monitor_fops = {
-	.open = m4u_proc_monitor_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_monitor_fops = {
+	.proc_open = m4u_proc_monitor_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1493,11 +1512,11 @@ int m4u_debug_register_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_register_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_register_fops = {
-	.open = m4u_debug_register_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_register_fops = {
+	.proc_open = m4u_debug_register_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1507,11 +1526,11 @@ int m4u_proc_register_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_register_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_register_fops = {
-	.open = m4u_proc_register_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_register_fops = {
+	.proc_open = m4u_proc_register_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1529,11 +1548,11 @@ int m4u_debug_db_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_db_show, inode->i_private);
 }
 
-const struct file_operations m4u_debug_db_fops = {
-	.open = m4u_debug_db_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_debug_db_fops = {
+	.proc_open = m4u_debug_db_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 
@@ -1543,11 +1562,11 @@ int m4u_proc_db_open(struct inode *inode, struct file *file)
 	return single_open(file, m4u_debug_db_show, PDE_DATA(inode));
 }
 
-const struct file_operations m4u_proc_db_fops = {
-	.open = m4u_proc_db_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+const struct proc_ops m4u_proc_db_fops = {
+	.proc_open = m4u_proc_db_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 

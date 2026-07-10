@@ -920,8 +920,6 @@ static struct thermal_zone_device_ops mtkts_btsmdpa_dev_ops = {
 	.bind = mtkts_btsmdpa_bind,
 	.unbind = mtkts_btsmdpa_unbind,
 	.get_temp = mtkts_btsmdpa_get_temp,
-	.get_mode = mtkts_btsmdpa_get_mode,
-	.set_mode = mtkts_btsmdpa_set_mode,
 	.get_trip_type = mtkts_btsmdpa_get_trip_type,
 	.get_trip_temp = mtkts_btsmdpa_get_trip_temp,
 	.get_crit_temp = mtkts_btsmdpa_get_crit_temp,
@@ -1348,13 +1346,12 @@ static int mtkts_btsmdpa_open(struct inode *inode, struct file *file)
 	return single_open(file, mtkts_btsmdpa_read, NULL);
 }
 
-static const struct file_operations mtkts_btsmdpa_fops = {
-	.owner = THIS_MODULE,
-	.open = mtkts_btsmdpa_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtkts_btsmdpa_write,
-	.release = single_release,
+static const struct proc_ops mtkts_btsmdpa_fops = {
+		.proc_open = mtkts_btsmdpa_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtkts_btsmdpa_write,
+	.proc_release = single_release,
 };
 
 
@@ -1363,13 +1360,12 @@ static int mtkts_btsmdpa_param_open(struct inode *inode, struct file *file)
 	return single_open(file, mtkts_btsmdpa_param_read, NULL);
 }
 
-static const struct file_operations mtkts_btsmdpa_param_fops = {
-	.owner = THIS_MODULE,
-	.open = mtkts_btsmdpa_param_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = mtkts_btsmdpa_param_write,
-	.release = single_release,
+static const struct proc_ops mtkts_btsmdpa_param_fops = {
+		.proc_open = mtkts_btsmdpa_param_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = mtkts_btsmdpa_param_write,
+	.proc_release = single_release,
 };
 
 

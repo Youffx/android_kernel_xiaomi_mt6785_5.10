@@ -339,13 +339,13 @@ mt_gpufreq_get_dvfs_table_num(void)
 /*=============================================================*/
 long long int thermal_get_current_time_us(void)
 {
-	struct timeval t;
+	struct timespec64 t;
 	long long int temp;
 
-	do_gettimeofday(&t);
+	ktime_get_real_ts64(&t);
 
 	temp = (((long long int) t.tv_sec) * 1000000
-		+ t.tv_usec);
+		+ t.tv_nsec / 1000);
 
 	return temp;
 }
@@ -688,8 +688,6 @@ static struct thermal_zone_device_ops mtktscpu_dev_ops = {
 	.bind = tscpu_bind,
 	.unbind = tscpu_unbind,
 	.get_temp = tscpu_get_temp,
-	.get_mode = tscpu_get_mode,
-	.set_mode = tscpu_set_mode,
 	.get_trip_type = tscpu_get_trip_type,
 	.get_trip_temp = tscpu_get_trip_temp,
 	.get_crit_temp = tscpu_get_crit_temp,
@@ -1641,10 +1639,10 @@ static int tscpu_thermal_suspend
 #endif
 	tscpu_printk("%s, %d\n", __func__, talking_flag);
 #if THERMAL_PERFORMANCE_PROFILE
-	struct timeval begin, end;
+	struct timespec64 begin, end;
 	unsigned long val;
 
-	do_gettimeofday(&begin);
+	ktime_get_real_ts64(&begin);
 #endif
 
 	g_tc_resume = 1;	/* set "1", don't read temp during suspend */
@@ -1721,12 +1719,12 @@ static int tscpu_thermal_suspend
 #endif
 	}
 #if THERMAL_PERFORMANCE_PROFILE
-	do_gettimeofday(&end);
+	ktime_get_real_ts64(&end);
 
 	/* Get milliseconds */
 	pr_notice("suspend time spent, sec : %lu , usec : %lu\n",
 						(end.tv_sec - begin.tv_sec),
-						(end.tv_usec - begin.tv_usec));
+						(end.tv_nsec / 1000 - begin.tv_nsec / 1000));
 #endif
 	return 0;
 }
@@ -2027,13 +2025,12 @@ static int tscpu_GPIO_out(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_GPIO_out, NULL);
 }
 
-static const struct file_operations mtktscpu_GPIO_out_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_GPIO_out,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_write_GPIO_out,
-	.release = single_release,
+static const struct proc_ops mtktscpu_GPIO_out_fops = {
+		.proc_open = tscpu_GPIO_out,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_write_GPIO_out,
+	.proc_release = single_release,
 };
 #endif
 
@@ -2042,13 +2039,12 @@ static int tscpu_Tj_out(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_Tj_out, NULL);
 }
 
-static const struct file_operations mtktscpu_Tj_out_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_Tj_out,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_write_Tj_out,
-	.release = single_release,
+static const struct proc_ops mtktscpu_Tj_out_fops = {
+		.proc_open = tscpu_Tj_out,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_write_Tj_out,
+	.proc_release = single_release,
 };
 
 static int tscpu_open_opp(struct inode *inode, struct file *file)
@@ -2056,12 +2052,11 @@ static int tscpu_open_opp(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_opp, NULL);
 }
 
-static const struct file_operations mtktscpu_opp_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_open_opp,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mtktscpu_opp_fops = {
+		.proc_open = tscpu_open_opp,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 #if LVTS_VALID_DATA_TIME_PROFILING
@@ -2076,12 +2071,11 @@ static int lvts_time_profiling_open_opp(struct inode *inode, struct file *file)
 	return single_open(file, lvts_time_profiling_read_opp, NULL);
 }
 
-static const struct file_operations lvts_time_profiling_opp_fops = {
-	.owner = THIS_MODULE,
-	.open = lvts_time_profiling_open_opp,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops lvts_time_profiling_opp_fops = {
+		.proc_open = lvts_time_profiling_open_opp,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #endif
 static int tscpu_open_log(struct inode *inode, struct file *file)
@@ -2089,13 +2083,12 @@ static int tscpu_open_log(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_log, NULL);
 }
 
-static const struct file_operations mtktscpu_log_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_open_log,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_write_log,
-	.release = single_release,
+static const struct proc_ops mtktscpu_log_fops = {
+		.proc_open = tscpu_open_log,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_write_log,
+	.proc_release = single_release,
 };
 
 static int tscpu_open(struct inode *inode, struct file *file)
@@ -2103,13 +2096,12 @@ static int tscpu_open(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read, NULL);
 }
 
-static const struct file_operations mtktscpu_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_write,
-	.release = single_release,
+static const struct proc_ops mtktscpu_fops = {
+		.proc_open = tscpu_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_write,
+	.proc_release = single_release,
 };
 
 static int tscpu_cal_open(struct inode *inode, struct file *file)
@@ -2117,12 +2109,11 @@ static int tscpu_cal_open(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_cal, NULL);
 }
 
-static const struct file_operations mtktscpu_cal_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_cal_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mtktscpu_cal_fops = {
+		.proc_open = tscpu_cal_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 
@@ -2131,12 +2122,11 @@ static int tscpu_read_temperature_open(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_temperature_info, NULL);
 }
 
-static const struct file_operations mtktscpu_read_temperature_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_read_temperature_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mtktscpu_read_temperature_fops = {
+		.proc_open = tscpu_read_temperature_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 static int tscpu_talking_flag_open(struct inode *inode, struct file *file)
@@ -2144,13 +2134,12 @@ static int tscpu_talking_flag_open(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_talking_flag_read, NULL);
 }
 
-static const struct file_operations mtktscpu_talking_flag_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_talking_flag_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_talking_flag_write,
-	.release = single_release,
+static const struct proc_ops mtktscpu_talking_flag_fops = {
+		.proc_open = tscpu_talking_flag_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_talking_flag_write,
+	.proc_release = single_release,
 };
 
 
@@ -2161,13 +2150,12 @@ static int tscpu_sspm_thermal_throttle_open
 	return single_open(file, tscpu_read_sspm_thermal_throttle, NULL);
 }
 
-static const struct file_operations mtktscpu_sspm_thermal_throttle = {
-	.owner = THIS_MODULE,
-	.open = tscpu_sspm_thermal_throttle_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_write_sspm_thermal_throttle,
-	.release = single_release,
+static const struct proc_ops mtktscpu_sspm_thermal_throttle = {
+		.proc_open = tscpu_sspm_thermal_throttle_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_write_sspm_thermal_throttle,
+	.proc_release = single_release,
 };
 #endif
 
@@ -2177,13 +2165,12 @@ static int tscpu_fastpoll_open(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_fastpoll, NULL);
 }
 
-static const struct file_operations mtktscpu_fastpoll_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_fastpoll_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.write = tscpu_write_fastpoll,
-	.release = single_release,
+static const struct proc_ops mtktscpu_fastpoll_fops = {
+		.proc_open = tscpu_fastpoll_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_write = tscpu_write_fastpoll,
+	.proc_release = single_release,
 };
 #endif
 
@@ -2226,12 +2213,11 @@ static int tscpu_ttpct_open(struct inode *inode, struct file *file)
 	return single_open(file, tscpu_read_ttpct, NULL);
 }
 
-static const struct file_operations mtktscpu_ttpct_fops = {
-	.owner = THIS_MODULE,
-	.open = tscpu_ttpct_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mtktscpu_ttpct_fops = {
+		.proc_open = tscpu_ttpct_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 #if THERMAL_DRV_UPDATE_TEMP_DIRECT_TO_MET
