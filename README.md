@@ -4,7 +4,7 @@
 **SoC:** MediaTek MT6785 (Helio G95)  
 **Device:** Xiaomi Redmi Note 10S / POCO M5s (codename: rosemary)  
 **Reference kernel:** `4.19` (stock)  
-**Compilation:** ✅ **vmlinux builds cleanly** — 13 fix commits on dev-test
+**Compilation:** ✅ **vmlinux builds cleanly** — GCC 13.3.0 & Clang 18 — 14 fix commits on dev-test
 
 ---
 
@@ -381,4 +381,5 @@ Output: `vmlinux` (ELF) + `arch/arm64/boot/Image.gz` + `arch/arm64/boot/dts/medi
 | 10 | Top mediatek Makefile: added subdir-ccflags-y for pmic includes |
 | 11 | vcodec: fixed `M4U_PORT` macro name for mt6785 |
 | 12 | eem: fixed regulator include path, mcdi headers ported |
-| 13 | Bulk fix: eem implicit declarations, vow callback, `do_gettimeofday` → `ktime_get_real_ts64`, met/audio/scp compat stubs, clkbuf gating, vmlinux.lds assert relaxation
+| 13 | Bulk fix: eem implicit declarations, vow callback, `do_gettimeofday` → `ktime_get_real_ts64`, met/audio/scp compat stubs, clkbuf gating, vmlinux.lds assert relaxation |
+| 14 | compat_stubs: fix `adaptive_cooler_name` type mismatch (function → variable) for Clang link |
