@@ -1515,7 +1515,7 @@ static int mtk_scp_audio_probe(struct snd_soc_component *component)
 		}
 		spin_lock_init(&task_base->ringbuf_lock);
 		ret = audio_task_register_callback(get_scene_by_daiid(id),
-						   scp_audio_pcm_ipi_recv);
+						   scp_audio_pcm_ipi_recv, NULL);
 		if (ret < 0)
 			return ret;
 	}
