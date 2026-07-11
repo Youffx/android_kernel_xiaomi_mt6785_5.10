@@ -2054,3 +2054,7 @@ EXPORT_SYMBOL(mtk_thermal_get_proc_drv_therm_dir_entry);
 
 module_init(mtkthermal_init);
 module_exit(mtkthermal_exit);
+
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION("MediaTek Thermal Monitor Driver");
+MODULE_AUTHOR("MediaTek Inc.");

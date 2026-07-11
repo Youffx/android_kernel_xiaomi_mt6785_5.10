@@ -448,3 +448,7 @@ static void __exit mtk_cooler_shutdown_exit(void)
 }
 module_init(mtk_cooler_shutdown_init);
 module_exit(mtk_cooler_shutdown_exit);
+
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION("MediaTek Thermal Cooler Shutdown Driver");
+MODULE_AUTHOR("MediaTek Inc.");

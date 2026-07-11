@@ -1977,3 +1977,7 @@ void goodix_bus_exit(void)
 	i2c_del_driver(&goodix_i2c_driver);
 	ts_info("Goodix driver exit");
 }
+
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION("Goodix Touchscreen I2C Bus Driver");
+MODULE_AUTHOR("Goodix");

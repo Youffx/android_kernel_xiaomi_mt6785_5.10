@@ -316,3 +316,5 @@ MODULE_DESCRIPTION("Low Power FileSystem");
 MODULE_AUTHOR("MediaTek Inc.");
 #endif
 
+MODULE_LICENSE("GPL");
+

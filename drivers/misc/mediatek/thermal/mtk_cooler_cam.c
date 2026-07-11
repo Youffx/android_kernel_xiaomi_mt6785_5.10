@@ -641,3 +641,7 @@ static void __exit mtk_cooler_cam_exit(void)
 }
 module_init(mtk_cooler_cam_init);
 module_exit(mtk_cooler_cam_exit);
+
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION("MediaTek Thermal Cooler Camera Driver");
+MODULE_AUTHOR("MediaTek Inc.");

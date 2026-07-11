@@ -543,3 +543,7 @@ EXPORT_SYMBOL(mtk_thermal_clear_user_scenarios);
 
 module_init(mtk_thermal_platform_init);
 module_exit(mtk_thermal_platform_exit);
+
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION("MediaTek Thermal Platform Driver");
+MODULE_AUTHOR("MediaTek Inc.");
