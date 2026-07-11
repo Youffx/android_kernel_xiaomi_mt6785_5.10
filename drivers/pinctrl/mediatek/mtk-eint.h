@@ -81,6 +81,7 @@ struct mtk_eint_xt {
 
 struct mtk_eint {
 	struct device *dev;
+	void __iomem *base;
 	struct irq_domain *domain;
 	int irq;
 
@@ -96,6 +97,10 @@ struct mtk_eint {
 	/* Used to fit into various pinctrl device */
 	void *pctl;
 	const struct mtk_eint_xt *gpio_xlate;
+
+	/* Used to fit into various EINT device */
+	const struct mtk_eint_hw *hw;
+	const struct mtk_eint_regs *regs;
 };
 
 #if IS_ENABLED(CONFIG_EINT_MTK)
