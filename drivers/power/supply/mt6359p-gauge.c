@@ -3191,7 +3191,7 @@ static int vbat_lt_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-void dump_nag(struct mtk_gauge *gauge)
+static void dump_nag(struct mtk_gauge *gauge)
 {
 	int nag[12];
 
@@ -3456,7 +3456,7 @@ static int mt6359_gauge_resume(struct platform_device *pdev)
 }
 
 
-signed int battery_meter_meta_tool_cali_car_tune(struct mtk_battery *gm,
+static signed int battery_meter_meta_tool_cali_car_tune(struct mtk_battery *gm,
 	int meta_current)
 {
 	int cali_car_tune = 0;
@@ -3707,7 +3707,7 @@ static void mtk_gauge_netlink_handler(struct sk_buff *skb)
 	mtk_battery_netlink_handler(skb);
 }
 
-int bat_create_netlink(struct platform_device *pdev)
+static int bat_create_netlink(struct platform_device *pdev)
 {
 	struct mtk_gauge *gauge;
 	struct netlink_kernel_cfg cfg = {

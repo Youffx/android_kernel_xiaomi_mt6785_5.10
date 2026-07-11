@@ -5,7 +5,7 @@
 
 obj-$(CONFIG_MTK_CONNFEM) += connfem.o
 
-ccflags-y += -D CONNFEM_DBG=0 -I$(src)/include
+ccflags-y += -D CONNFEM_DBG=0 -I$(srctree)/$(src)/include
 
 connfem-objs += connfem_module.o
 connfem-objs += connfem_api.o
