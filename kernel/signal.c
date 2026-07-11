@@ -1302,11 +1302,12 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
 		ret = send_signal(sig, info, p, type);
 		unlock_task_sighand(p, &flags);
 	}
-
 	return ret;
 }
+EXPORT_SYMBOL_GPL(do_send_sig_info);
 
 /*
+
  * Force a signal that the process can't ignore: if necessary
  * we unblock the signal and change any SIG_IGN to SIG_DFL.
  *

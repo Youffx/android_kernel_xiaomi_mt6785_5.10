@@ -157,9 +157,39 @@ EXPORT_SYMBOL_GPL(mml_drm_put_context);
 void __weak mml_drm_split_info(void *submit, void *submit_pq) { }
 EXPORT_SYMBOL_GPL(mml_drm_split_info);
 
-/* --- CLKBUF voter (needs CLKBUF driver) --- */
+/* --- CLKBUF voter (needs CLKBUF driver, exported by clkbuf module) --- */
 int __weak clk_buf_voter_ctrl_by_id(u8 subsys_id, int rc_req) { return 0; }
-EXPORT_SYMBOL(clk_buf_voter_ctrl_by_id);
+
+/* --- PWM HAL (needs MTK_PWM built-in) --- */
+int __weak mt_pwm_clk_sel_hal(unsigned int id, unsigned int clk) { return 0; }
+EXPORT_SYMBOL_GPL(mt_pwm_clk_sel_hal);
+
+/* --- Goodix/LCT touchscreen stubs (ported from 4.19 goodix driver) --- */
+char *goodix_modules = NULL;
+EXPORT_SYMBOL_GPL(goodix_modules);
+int __weak goodix_bus_init(void) { return 0; }
+EXPORT_SYMBOL_GPL(goodix_bus_init);
+void __weak goodix_bus_exit(void) { }
+EXPORT_SYMBOL_GPL(goodix_bus_exit);
+int __weak goodix_rotate_abcd2cbad(int a, int b, int c, int d) { return 0; }
+EXPORT_SYMBOL_GPL(goodix_rotate_abcd2cbad);
+
+int __weak init_lct_tp_work(void) { return 0; }
+EXPORT_SYMBOL_GPL(init_lct_tp_work);
+void __weak uninit_lct_tp_work(void) { }
+EXPORT_SYMBOL_GPL(uninit_lct_tp_work);
+int __weak get_lct_tp_work_status(void) { return 0; }
+EXPORT_SYMBOL_GPL(get_lct_tp_work_status);
+void __weak set_lct_tp_work_status(int status) { }
+EXPORT_SYMBOL_GPL(set_lct_tp_work_status);
+int __weak init_lct_tp_palm(void) { return 0; }
+EXPORT_SYMBOL_GPL(init_lct_tp_palm);
+void __weak set_lct_tp_palm_status(int status) { }
+EXPORT_SYMBOL_GPL(set_lct_tp_palm_status);
+int __weak init_lct_tp_grip_area(void) { return 0; }
+EXPORT_SYMBOL_GPL(init_lct_tp_grip_area);
+int __weak lct_gsx_tp_gesture_callback(void *dev, int gesture) { return 0; }
+EXPORT_SYMBOL_GPL(lct_gsx_tp_gesture_callback);
 
 /* --- n3d_fsync (N3D camera timestamp sync) --- */
 int __weak n3d_init(void) { return 0; }
