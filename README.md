@@ -295,30 +295,27 @@ These items were present in 4.19 but cannot be replicated in 5.10:
 - **Clang 18+** (`clang-18`) **or** **GCC 13+** (`aarch64-linux-gnu-gcc`)
 - **aarch64-linux-gnu binutils** (for linker, objcopy, etc.)
 
-### Build (Clang)
+### Build (Clang — GKI2)
 
 ```bash
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 export CC=clang-18
 export CLANG_TRIPLE=aarch64-linux-gnu-
-make O=out rosemary_defconfig
-make O=out -j$(nproc)
+make O=out rosemary_gki_defconfig
+make O=out -j$(nproc) Image.gz
+make O=out -j$(nproc) modules
 ```
 
-### Build (GCC)
+Output: `vmlinux` (ELF) + `arch/arm64/boot/Image.gz` (GKI kernel, no DTB) + vendor `.ko` modules under `out/`
+
+### Build (GCC — Legacy)
 
 ```bash
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
-make rosemary_defconfig
-make -j$(nproc)
+make O=out rosemary_defconfig
+make O=out -j$(nproc) Image.gz-dtb
 ```
 
-Output: `vmlinux` (ELF) + `arch/arm64/boot/Image.gz` + `arch/arm64/boot/Image.gz-dtb` (kernel + board DTB) + `arch/arm64/boot/dts/mediatek/mt6785.dtb` + `arch/arm64/boot/dts/mediatek/rosemary.dtb`
-
-### Image.gz-dtb (for AnyKernel)
-
-```bash
-cat arch/arm64/boot/Image.gz arch/arm64/boot/dts/mediatek/rosemary.dtb > arch/arm64/boot/Image.gz-dtb
-```
+Output: `vmlinux` + `arch/arm64/boot/Image.gz-dtb` (kernel + board DTB)
