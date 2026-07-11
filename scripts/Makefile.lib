@@ -307,6 +307,9 @@ cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
 # Gzip
 # ---------------------------------------------------------------------------
 
+quiet_cmd_cat = CAT     $@
+      cmd_cat = cat $(real-prereqs) > $@
+
 quiet_cmd_gzip = GZIP    $@
       cmd_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9 > $@
 
