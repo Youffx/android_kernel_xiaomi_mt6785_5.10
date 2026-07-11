@@ -717,8 +717,8 @@ static int __init fpc_sensor_init(void)
 
 	return status;
 }
-//module_init(fpc_sensor_init);
-late_initcall(fpc_sensor_init);
+module_init(fpc_sensor_init);
+// late_initcall(fpc_sensor_init);
 static void __exit fpc_sensor_exit(void)
 {
 	spi_unregister_driver(&mtk6765_driver);

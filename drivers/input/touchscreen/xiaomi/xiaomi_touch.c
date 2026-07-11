@@ -368,5 +368,8 @@ static void __exit xiaomi_touch_exit(void)
 	platform_driver_unregister(&xiaomi_touch_device_driver);
 }
 
-subsys_initcall(xiaomi_touch_init);
+module_init(xiaomi_touch_init);
 module_exit(xiaomi_touch_exit);
+MODULE_LICENSE("GPL v2");
+MODULE_AUTHOR("Xiaomi, Inc.");
+MODULE_DESCRIPTION("Xiaomi Touch Feature driver");

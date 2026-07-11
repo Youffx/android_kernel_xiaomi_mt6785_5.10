@@ -932,8 +932,8 @@ static int __init wl2866d_i2c_init(void)
 	printk(KERN_ERR "%s\n", __func__);
 	return i2c_add_driver(&wl2866d_driver);
 }
-subsys_initcall(wl2866d_i2c_init);
-//module_init(wl2866d_i2c_init);
+// subsys_initcall(wl2866d_i2c_init);
+module_init(wl2866d_i2c_init);
 static void __exit wl2866d_i2c_exit(void)
 {
 	printk(KERN_ERR "%s\n", __func__);

@@ -18,7 +18,7 @@ config MTK_FINGERPRINT_SELECT
 	default "GF318M"
 
 config FPC_FINGERPRINT
-	bool "FPC Fingerprint"
+	tristate "FPC Fingerprint"
 	default n
 	help
 	  FPC fingerprint FPC's 102x/104x device.

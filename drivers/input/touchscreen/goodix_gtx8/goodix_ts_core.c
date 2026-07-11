@@ -3087,7 +3087,7 @@ static void __exit goodix_ts_core_exit(void)
 	goodix_bus_exit();
 	return;
 }
-late_initcall(goodix_ts_core_init);
+module_init(goodix_ts_core_init);
 module_exit(goodix_ts_core_exit);
 
 MODULE_DESCRIPTION("Goodix Touchscreen Core Module");

@@ -2273,7 +2273,7 @@ static int __init gf_init(void)
 	FUNC_EXIT();
 	return 0;
 }
-late_initcall(gf_init);
+module_init(gf_init);
 
 static void __exit gf_exit(void)
 {

@@ -6,7 +6,7 @@ config BATT_VERIFY_BY_DS28E16
 		It needs a onewire physical controller to work.
 
 config ONEWIRE_GPIO
-	bool
+	tristate
 	prompt "Support Onewire Driver."
 	default n
 	help

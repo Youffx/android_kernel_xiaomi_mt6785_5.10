@@ -1,5 +1,5 @@
 config TOUCHSCREEN_XIAOMI_TOUCHFEATURE
-	bool "Xiaomi touch feature"
+	tristate "Xiaomi touch feature"
 	default n
 	help
 	  Say Y here if you want Xiaomi touch feature.

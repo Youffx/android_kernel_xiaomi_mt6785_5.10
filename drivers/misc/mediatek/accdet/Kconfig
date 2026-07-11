@@ -1,5 +1,5 @@
 config MTK_ACCDET
-	bool "MediaTek ACCDET driver"
+	tristate "MediaTek ACCDET driver"
 	help
 	  ACCDET driver is for headset detect and support for MediaTek SOC
 	  If you want to use MediaTek ACCDET driver,
