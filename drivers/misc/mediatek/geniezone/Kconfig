@@ -78,11 +78,13 @@ config MTK_GZ_KREE
 
 config MTK_GZ_TZ_SYSTEM
 	tristate "GenieZone tz_system support"
+	depends on MTK_GZ_MAIN
 	help
 	  GenieZone TZ_SYSTEM driver
 	  supports some APIs for IPC, and
 	  session-related functions.
-	  This module must be enabled.
+	  Now built as part of GZ_MAIN.
+	  Say Y (or M, same effect if GZ_MAIN is M).
 
 config GZ_VPU_WITH_M4U
 	bool "GenieZone support VPU with M4U"
