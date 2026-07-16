@@ -157,7 +157,7 @@ static void pre_gauge_update(struct mtk_gauge *gauge)
 	} while (reg_val == 0);
 }
 
-void disable_all_irq(struct mtk_battery *gm)
+__weak void disable_all_irq(struct mtk_battery *gm)
 {
 	disable_gauge_irq(gm->gauge, COULOMB_H_IRQ);
 	disable_gauge_irq(gm->gauge, COULOMB_L_IRQ);
@@ -334,7 +334,7 @@ u8 get_rtc_spare_fg_value(struct mtk_gauge *gauge)
 	return data;
 }
 
-void set_rtc_spare_fg_value(struct mtk_gauge *gauge, u8 val)
+static void set_rtc_spare_fg_value(struct mtk_gauge *gauge, u8 val)
 {
 	struct nvmem_cell *cell;
 	u32 length = 1;
@@ -507,14 +507,14 @@ static void fgauge_set_nafg_intr_internal(struct mtk_gauge *gauge,
 
 }
 
-int nafg_zcv_set(struct mtk_gauge *gauge,
+static int nafg_zcv_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int zcv)
 {
 	gauge->nafg_zcv_mv = zcv;	/* 0.1 mv*/
 	return 0;
 }
 
-int zcv_current_get(struct mtk_gauge *gauge,
+static int zcv_current_get(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int *zcv_current)
 {
 	unsigned int uvalue16 = 0;
@@ -569,7 +569,7 @@ int zcv_current_get(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int nafg_c_dltv_set(struct mtk_gauge *gauge,
+static int nafg_c_dltv_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int c_dltv_mv)
 {
 	gauge->nafg_c_dltv_mv = c_dltv_mv;	/* 0.1 mv*/
@@ -605,14 +605,14 @@ static int get_nafg_vbat(struct mtk_gauge *gauge)
 	return nag_vbat_mv;
 }
 
-int nafg_vbat_get(struct mtk_gauge *gauge,
+static int nafg_vbat_get(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int *vbat)
 {
 	*vbat = get_nafg_vbat(gauge);
 	return 0;
 }
 
-int bat_plugout_en_set(struct mtk_gauge *gauge,
+static int bat_plugout_en_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int val)
 {
 	if (val != 0) {
@@ -688,7 +688,7 @@ static void fgauge_set_zcv_intr_internal(
 		fg_zcv_car_thr_h_reg, fg_zcv_car_thr_l_reg);
 }
 
-int zcv_intr_threshold_set(struct mtk_gauge *gauge,
+static int zcv_intr_threshold_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int zcv_avg_current)
 {
 	int fg_zcv_det_time;
@@ -706,7 +706,7 @@ int zcv_intr_threshold_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int zcv_intr_en_set(struct mtk_gauge *gauge,
+static int zcv_intr_en_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int en)
 {
 	static int cnt;
@@ -743,13 +743,13 @@ int zcv_intr_en_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int soff_reset_set(struct mtk_gauge *gauge,
+static int soff_reset_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int en)
 {
 	return 0;
 }
 
-int ncar_reset_set(struct mtk_gauge *gauge,
+static int ncar_reset_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int val)
 {
 	regmap_update_bits(gauge->regmap,
@@ -767,7 +767,7 @@ int ncar_reset_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int nafg_check_corner(struct mtk_gauge *gauge)
+static int nafg_check_corner(struct mtk_gauge *gauge)
 {
 	int nag_vbat = 0;
 	int setto_cdltv_thr_mv = 0;
@@ -826,7 +826,7 @@ int nafg_check_corner(struct mtk_gauge *gauge)
 	return 0;
 }
 
-int event_set(struct mtk_gauge *gauge,
+static int event_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int event)
 {
 	if (event == EVT_INT_NAFG_CHECK)
@@ -835,7 +835,7 @@ int event_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int bat_tmp_ht_threshold_set(struct mtk_gauge *gauge,
+static int bat_tmp_ht_threshold_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int threshold)
 {
 	int tmp_int_lt = mv_to_reg_12_temp_value(threshold);
@@ -852,7 +852,7 @@ int bat_tmp_ht_threshold_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int en_bat_tmp_ht_set(struct mtk_gauge *gauge,
+static int en_bat_tmp_ht_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int en)
 {
 	if (en == 0) {
@@ -914,7 +914,7 @@ int en_bat_tmp_ht_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int bat_tmp_lt_threshold_set(struct mtk_gauge *gauge,
+static int bat_tmp_lt_threshold_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int threshold)
 {
 	int tmp_int_lt = mv_to_reg_12_temp_value(threshold);
@@ -931,7 +931,7 @@ int bat_tmp_lt_threshold_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int en_bat_tmp_lt_set(struct mtk_gauge *gauge,
+static int en_bat_tmp_lt_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int en)
 {
 	if (en == 0) {
@@ -992,7 +992,7 @@ int en_bat_tmp_lt_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int bat_cycle_intr_threshold_set(struct mtk_gauge *gauge,
+static int bat_cycle_intr_threshold_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int threshold)
 {
 	long long car = threshold;
@@ -1049,7 +1049,7 @@ int bat_cycle_intr_threshold_set(struct mtk_gauge *gauge,
 
 }
 
-int fgauge_get_time(struct mtk_gauge *gauge_dev, unsigned int *ptime)
+static int fgauge_get_time(struct mtk_gauge *gauge_dev, unsigned int *ptime)
 {
 	unsigned int time_29_16, time_15_00, ret_time;
 	long long time = 0;
@@ -1140,13 +1140,13 @@ static int instant_current(struct mtk_gauge *gauge)
 	return dvalue;
 }
 
-void read_fg_hw_info_current_1(struct mtk_gauge *gauge_dev)
+static void read_fg_hw_info_current_1(struct mtk_gauge *gauge_dev)
 {
 	gauge_dev->fg_hw_info.current_1 =
 		instant_current(gauge_dev);
 }
 
-void read_fg_hw_info_current_2(struct mtk_gauge *gauge_dev)
+static void read_fg_hw_info_current_2(struct mtk_gauge *gauge_dev)
 {
 	long long fg_current_2_reg;
 	int cic2_reg;
@@ -1448,7 +1448,7 @@ static signed int fg_set_iavg_intr(struct mtk_gauge *gauge_dev, void *data)
 	return 0;
 }
 
-void read_fg_hw_info_ncar(struct mtk_gauge *gauge_dev)
+static void read_fg_hw_info_ncar(struct mtk_gauge *gauge_dev)
 {
 	unsigned int uvalue32_NCAR = 0;
 	unsigned int uvalue32_NCAR_MSB = 0;
@@ -1631,7 +1631,7 @@ static int coulomb_get(struct mtk_gauge *gauge,
 	return 0;
 }
 
-int hw_info_set(struct mtk_gauge *gauge_dev,
+static int hw_info_set(struct mtk_gauge *gauge_dev,
 	struct mtk_gauge_sysfs_field_info *attr, int en)
 {
 	int ret;
@@ -1695,7 +1695,7 @@ int hw_info_set(struct mtk_gauge *gauge_dev,
 	return 0;
 }
 
-int nafg_en_set(struct mtk_gauge *gauge,
+static int nafg_en_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int val)
 {
 	static int cnt;
@@ -1834,7 +1834,7 @@ static int calculate_car_tune(struct mtk_gauge *gauge)
 	return 0;
 }
 
-int info_set(struct mtk_gauge *gauge,
+static int info_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int val)
 {
 	int ret = 0;
@@ -1857,7 +1857,7 @@ int info_set(struct mtk_gauge *gauge,
 	return ret;
 }
 
-int info_get(struct mtk_gauge *gauge,
+static int info_get(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int *val)
 {
 	int ret = 0;
