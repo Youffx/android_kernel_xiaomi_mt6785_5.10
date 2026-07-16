@@ -4,7 +4,8 @@
 #include <linux/module.h>
 #include <linux/device.h>
 
-/* KREE (GenieZone TrustZone) */
+/* KREE (GenieZone TrustZone) — real impl in gz_main_mod when GZ_MAIN=y */
+#if !IS_ENABLED(CONFIG_MTK_GZ_MAIN)
 int KREE_CreateSession(void) { return -ENOSYS; }
 EXPORT_SYMBOL(KREE_CreateSession);
 int KREE_CloseSession(void) { return -ENOSYS; }
@@ -36,24 +37,24 @@ EXPORT_SYMBOL(KREE_ION_QueryChunkmem_TEST);
 int TeeServiceCall_wake_lock(void) { return -ENOSYS; }
 EXPORT_SYMBOL(TeeServiceCall_wake_lock);
 
-/* Performance/power management */
 int perf_boost_cnt;
 EXPORT_SYMBOL(perf_boost_cnt);
 int perf_boost_lock;
 EXPORT_SYMBOL(perf_boost_lock);
+
+int _map_user_pages(void) { return -ENOSYS; }
+EXPORT_SYMBOL(_map_user_pages);
+
+struct device *tz_system_dev;
+EXPORT_SYMBOL(tz_system_dev);
+int tz_system_driver;
+EXPORT_SYMBOL(tz_system_driver);
+#endif
 
 /* IOMMU / trusted mem */
 int mtk_iommu_sec_init(void) { return -ENOSYS; }
 EXPORT_SYMBOL(mtk_iommu_sec_init);
 int tmem_type2sec_id(void) { return -ENOSYS; }
 EXPORT_SYMBOL(tmem_type2sec_id);
-int _map_user_pages(void) { return -ENOSYS; }
-EXPORT_SYMBOL(_map_user_pages);
-
-/* TZ system */
-struct device *tz_system_dev;
-EXPORT_SYMBOL(tz_system_dev);
-int tz_system_driver;
-EXPORT_SYMBOL(tz_system_driver);
 
 
