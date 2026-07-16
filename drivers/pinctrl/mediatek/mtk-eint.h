@@ -84,6 +84,10 @@ struct mtk_eint {
 	struct irq_domain *domain;
 	int irq;
 
+	void __iomem *base;
+	const struct mtk_eint_regs *regs;
+	const struct mtk_eint_hw *hw;
+
 	/* An array to record the coordinate, index by global EINT ID */
 	struct mtk_eint_pin *pins;
 	/* An array to record the global EINT ID, index by coordinate*/
