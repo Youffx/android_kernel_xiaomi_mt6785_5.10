@@ -422,7 +422,8 @@ static int trusty_irq_init_normal_irq(struct trusty_irq_state *is, int tirq)
 
 err_request_irq:
 	spin_lock_irqsave(&is->normal_irqs_lock, irq_flags);
-	hlist_del(&trusty_irq->node);
+	if (!hlist_unhashed(&trusty_irq->node))
+		hlist_del(&trusty_irq->node);
 	spin_unlock_irqrestore(&is->normal_irqs_lock, irq_flags);
 	kfree(trusty_irq);
 	return ret;
@@ -604,6 +605,11 @@ static void init_irq_node(struct device_node *node)
 
 	if (!ppi)
 		return;
+
+	// trusty returns absolute GIC hwirq numbers, so use GIC
+	// for both SPI and PPI mapping instead of intpol-controller
+	if (ppi != spi)
+		spi = ppi;
 
 	spi_node = spi;
 	ppi_node = ppi;

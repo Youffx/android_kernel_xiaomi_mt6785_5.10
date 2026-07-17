@@ -744,6 +744,7 @@ page_owner=on loop.max_part=7";
 	gpio: gpio@10005000 {
 		compatible = "mediatek,gpio", "syscon";
 		reg = <0 0x10005000 0 0x1000>;
+		#gpio-cells = <2>;
 	};
 
 	pio: pinctrl {
@@ -3336,6 +3337,9 @@ page_owner=on loop.max_part=7";
 		compatible = "mediatek,mt8183-ufsphy";
 		reg = <0 0x11fa0000 0 0xc000>;
 		#phy-cells = <0>;
+		clocks = <&infracfg_ao INFRACFG_AO_UNIPRO_SCK_CG>,
+			 <&infracfg_ao INFRACFG_AO_UFS_MP_SAP_BCLK_CG>;
+		clock-names = "unipro", "mp";
 	};
 
 	ca9peri@10e00000 {
