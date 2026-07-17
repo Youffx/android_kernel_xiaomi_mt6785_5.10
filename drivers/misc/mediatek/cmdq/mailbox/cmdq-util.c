@@ -656,27 +656,21 @@ int cmdq_util_init(void)
 
 	util.fs.status = debugfs_create_file(
 		"cmdq-status", 0444, dir, &util, &cmdq_util_status_fops);
-	if (IS_ERR(util.fs.status)) {
+	if (IS_ERR(util.fs.status))
 		cmdq_err("debugfs_create_file cmdq-status failed:%ld",
 			PTR_ERR(util.fs.status));
-		return PTR_ERR(util.fs.status);
-	}
 
 	util.fs.record = debugfs_create_file(
 		"cmdq-record", 0444, dir, &util, &cmdq_util_record_fops);
-	if (IS_ERR(util.fs.record)) {
+	if (IS_ERR(util.fs.record))
 		cmdq_err("debugfs_create_file cmdq-record failed:%ld",
 			PTR_ERR(util.fs.record));
-		return PTR_ERR(util.fs.record);
-	}
 
 	util.fs.log_feature = debugfs_create_file("cmdq-log-feature",
 		0444, dir, &util, &cmdq_util_log_feature_fops);
-	if (IS_ERR(util.fs.log_feature)) {
+	if (IS_ERR(util.fs.log_feature))
 		cmdq_err("debugfs_create_file cmdq-log-feature failed:%ld",
 			PTR_ERR(util.fs.log_feature));
-		return PTR_ERR(util.fs.log_feature);
-	}
 
 	if (exists)
 		dput(dir);

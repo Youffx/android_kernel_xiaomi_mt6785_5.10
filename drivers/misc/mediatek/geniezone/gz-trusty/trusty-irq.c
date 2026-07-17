@@ -391,7 +391,8 @@ static int trusty_irq_init_normal_irq(struct trusty_irq_state *is, int tirq)
 		oirq.args_count = 3;
 		oirq.args[0] = GIC_SPI;
 		oirq.args[1] = irq - 32;
-		oirq.args[2] = IRQ_TYPE_LEVEL_HIGH;
+		/* use NONE to avoid type mismatch with pre-configured GIC irqs */
+		oirq.args[2] = IRQ_TYPE_NONE;
 
 		irq = irq_create_of_mapping(&oirq);
 		if (irq == 0) {
@@ -486,7 +487,7 @@ static int trusty_irq_init_per_cpu_irq(struct trusty_irq_state *is, int tirq)
 		oirq.args_count = 3;
 		oirq.args[0] = GIC_PPI;
 		oirq.args[1] = irq - 16;
-		oirq.args[2] = IRQ_TYPE_LEVEL_HIGH;
+		oirq.args[2] = IRQ_TYPE_NONE;
 
 		irq = irq_create_of_mapping(&oirq);
 		if (irq == 0) {

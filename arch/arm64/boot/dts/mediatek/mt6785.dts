@@ -4041,10 +4041,20 @@ page_owner=on loop.max_part=7";
 		reg = <0 0x15020000 0 0x1000>;
 				clocks =
 				<&imgsys IMG_LARB5>,
-				<&imgsys IMG_DIP>;
+				<&imgsys IMG_DIP>,
+				<&imgsys IMG_LARB9>,
+				<&imgsys IMG_DIP_MSS>,
+				<&imgsys IMG_MFB_DIP>,
+				<&imgsys IMG_LARB11>,
+				<&imgsys IMG_DIP2>;
 		clock-names =
 				"DIP_CG_IMG_LARB5",
-				"DIP_CG_IMG_DIP";
+				"DIP_CG_IMG_DIP",
+				"DIP_CG_IMG_LARB9",
+				"DIP_CG_IMG_DIP_MSS",
+				"DIP_CG_IMG_MFB_DIP",
+				"DIP_CG_IMG_LARB11",
+				"DIP_CG_IMG_DIP2";
 	};
 
 	imgsyscq@15020000 {

@@ -142,9 +142,14 @@ int init_smcnr_table(struct device *dev, enum tee_id_t tee_id)
 		ver = 0;
 
 	if (ver < TRUSTY_API_VERSION_SMCNR_TABLE) {
-		pr_info("GZ SMC version(%u) is not supported for MTEE %d, %s\n",
-			ver, tee_id, "please update");
-		return -ENODEV;
+		if (ver == 0) {
+			pr_info("GZ SMC version(%u) fallback for MTEE %d\n",
+				ver, tee_id);
+		} else {
+			pr_info("GZ SMC version(%u) is not supported for MTEE %d, %s\n",
+				ver, tee_id, "please update");
+			return -ENODEV;
+		}
 	}
 
 	pr_info("New smcall table ver %d support for MTEE %d\n", ver, tee_id);

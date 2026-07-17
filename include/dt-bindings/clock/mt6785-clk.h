@@ -332,7 +332,12 @@
 #define	IMG_WPE_A	8
 #define	IMG_WPE_B 9
 #define	IMG_OWE 10
-#define IMG_NR_CLK 11
+#define	IMG_LARB9 11
+#define	IMG_DIP_MSS 12
+#define	IMG_MFB_DIP 13
+#define	IMG_LARB11 14
+#define	IMG_DIP2 15
+#define IMG_NR_CLK 16
 
 
 /* MMSYS_CONFIG */

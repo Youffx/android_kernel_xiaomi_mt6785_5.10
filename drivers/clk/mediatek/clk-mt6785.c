@@ -2656,6 +2656,11 @@ static const struct mtk_gate img_clks[] = {
 	GATE_IMG_DUMMY(IMG_WPE_A, "imgsys_wpe_a", "img_sel", 7),
 	GATE_IMG_DUMMY(IMG_WPE_B, "imgsys_wpe_b", "img_sel", 8),
 	GATE_IMG_DUMMY(IMG_OWE, "imgsys_owe", "img_sel", 9),
+	GATE_IMG_DUMMY(IMG_LARB9, "imgsys_larb9", "img_sel", 10),
+	GATE_IMG_DUMMY(IMG_DIP_MSS, "imgsys_dip_mss", "img_sel", 11),
+	GATE_IMG_DUMMY(IMG_MFB_DIP, "imgsys_mfb_dip", "img_sel", 12),
+	GATE_IMG_DUMMY(IMG_LARB11, "imgsys_larb11", "img_sel", 13),
+	GATE_IMG_DUMMY(IMG_DIP2, "imgsys_dip2", "img_sel", 14),
 #else
 	GATE_IMG(IMG_LARB5, "imgsys_larb5", "img_sel", 0),
 	GATE_IMG(IMG_LARB4, "imgsys_larb4", "img_sel", 1),
@@ -2667,6 +2672,11 @@ static const struct mtk_gate img_clks[] = {
 	GATE_IMG(IMG_WPE_A, "imgsys_wpe_a", "img_sel", 7),
 	GATE_IMG(IMG_WPE_B, "imgsys_wpe_b", "img_sel", 8),
 	GATE_IMG(IMG_OWE, "imgsys_owe", "img_sel", 9),
+	GATE_IMG(IMG_LARB9, "imgsys_larb9", "img_sel", 10),
+	GATE_IMG(IMG_DIP_MSS, "imgsys_dip_mss", "img_sel", 11),
+	GATE_IMG(IMG_MFB_DIP, "imgsys_mfb_dip", "img_sel", 12),
+	GATE_IMG(IMG_LARB11, "imgsys_larb11", "img_sel", 13),
+	GATE_IMG(IMG_DIP2, "imgsys_dip2", "img_sel", 14),
 #endif
 };
 
